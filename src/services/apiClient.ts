@@ -1,7 +1,8 @@
 import axios from 'axios';
+import type { AxiosError } from 'axios';
 
 // Get base URL from environment variables, fallback to development localhost if not found
-const baseURL = import.meta.env.VITE_API_URL || 'https://localhost:44383/';
+const baseURL = import.meta.env.VITE_API_URL || 'https://localhost:44383';
 
 /**
  * Main Axios instance configured with the Base URL.
@@ -17,38 +18,33 @@ export const apiClient = axios.create({
   timeout: 15000, 
 });
 
-/**
- * Example of Request Interceptor
- * Useful for attaching authentication tokens (JWT) to all requests automatically.
- */
 apiClient.interceptors.request.use(
   (config) => {
-    // const token = localStorage.getItem('token');
-    // if (token && config.headers) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    const token = sessionStorage.getItem('token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     return Promise.reject(error);
   }
 );
 
-/**
- * Example of Response Interceptor
- * Useful for general error handling globally (like 401 Unauthorized or 403 Forbidden).
- */
 apiClient.interceptors.response.use(
-  (response) => {
-    // Any status code within 2xx triggers this function
-    return response;
-  },
-  (error) => {
-    // Any status code outside 2xx triggers this function
-    // Example: Redirect to login if user session expired
-    // if (error.response?.status === 401) {
-    //     console.error('Unauthorized access. Redirecting...');
-    // }
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response) {
+      const { status } = error.response;
+      if (status === 401) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('companyId');
+      }
+    } else if (error.code === 'ERR_NETWORK') {
+      console.error('Network error: no se pudo conectar al servidor');
+    } else if (error.code === 'ECONNABORTED') {
+      console.error('Timeout: la solicitud tardó demasiado');
+    }
     return Promise.reject(error);
   }
 );
