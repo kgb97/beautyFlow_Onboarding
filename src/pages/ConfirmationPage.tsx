@@ -56,11 +56,11 @@ const ConfirmationPage = () => {
 
   const handleGoToPortal = () => {
     const portalAdminUrl = import.meta.env.VITE_PORTAL_ADMIN_URL || 'http://localhost:5173';
-    const currentToken = sessionStorage.getItem('token');
     const companyId = sessionStorage.getItem('companyId') || '';
+    const ownerEmail = data.ownerEmail;
     
-    if (currentToken) {
-      window.location.href = `${portalAdminUrl}/login#t=${currentToken}&c=${companyId}`;
+    if (ownerEmail) {
+      window.location.href = `${portalAdminUrl}/login#e=${encodeURIComponent(ownerEmail)}&c=${encodeURIComponent(companyId)}`;
     } else {
       window.location.href = portalAdminUrl;
     }
