@@ -13,30 +13,90 @@ import ClickSparkleStyles from '../components/svg/ClickSparkleStyles';
 import './RegistrationPage.css';
 import axios from 'axios';
 
-function validateField(name: string, value: string | boolean, ownerPassword: string = '') {
-  let error = '';
+// Limites alineados con la API (FluentValidation en BeautyFlow.Application/Validators/OnboardingValidator.cs)
+const FIELD_MAX: Record<string, number> = {
+  companyName: 100,
+  ruc: 20,
+  companyEmail: 100,
+  companyAddress: 200,
+  companyPhone: 16, // 1 '+' opcional + hasta 15 dígitos
+  ownerFirstName: 50,
+  ownerLastName: 50,
+  ownerEmail: 100,
+  ownerPassword: 64,
+  confirmPassword: 64,
+};
+
+// Aplica máscara a la entrada según el campo. Se ejecuta en cada keystroke.
+function formatField(name: string, raw: string): string {
   switch (name) {
     case 'companyName':
-    case 'ruc':
     case 'companyAddress':
-    case 'companyPhone':
+      return raw.slice(0, FIELD_MAX[name]);
+    case 'ruc':
+      // RUC/NIT: alfanumérico mayúsculas y guiones
+      return raw.toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, FIELD_MAX.ruc);
+    case 'companyEmail':
+    case 'ownerEmail':
+      return raw.replace(/\s/g, '').toLowerCase().slice(0, FIELD_MAX[name]);
+    case 'companyPhone': {
+      // Backend exige ^\+?[0-9]{7,15}$ -> máscara: opcional '+' al inicio y solo dígitos.
+      const startsWithPlus = raw.trimStart().startsWith('+');
+      const digits = raw.replace(/\D/g, '').slice(0, 15);
+      return (startsWithPlus ? '+' : '') + digits;
+    }
     case 'ownerFirstName':
     case 'ownerLastName':
-      if (!value || (typeof value === 'string' && value.trim() === '')) error = 'Este campo es requerido';
+      // Letras (acentos), espacios, apóstrofo y guion. Sin números ni símbolos.
+      return raw.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s'-]/g, '').slice(0, FIELD_MAX[name]);
+    case 'ownerPassword':
+    case 'confirmPassword':
+      return raw.slice(0, FIELD_MAX[name]);
+    default:
+      return raw;
+  }
+}
+
+function validateField(name: string, value: string | boolean, ownerPassword: string = '') {
+  let error = '';
+  const str = typeof value === 'string' ? value : '';
+  switch (name) {
+    case 'companyName':
+      if (!str.trim()) error = 'El nombre del salón es requerido';
+      else if (str.length > 100) error = 'Máximo 100 caracteres';
+      break;
+    case 'ruc':
+      if (!str.trim()) error = 'El RUC/NIT es requerido';
+      else if (str.length < 4) error = 'Mínimo 4 caracteres';
+      else if (str.length > 20) error = 'Máximo 20 caracteres';
+      break;
+    case 'companyAddress':
+      if (!str.trim()) error = 'La dirección es requerida';
+      break;
+    case 'companyPhone':
+      if (!str.trim()) error = 'El teléfono es requerido';
+      else if (!/^\+?[0-9]{7,15}$/.test(str)) error = 'Solo dígitos (7–15), opcional + al inicio';
+      break;
+    case 'ownerFirstName':
+    case 'ownerLastName':
+      if (!str.trim()) error = 'Este campo es requerido';
+      else if (str.trim().length < 2) error = 'Mínimo 2 caracteres';
+      else if (str.length > 50) error = 'Máximo 50 caracteres';
       break;
     case 'companyEmail':
     case 'ownerEmail':
-      if (!value) error = 'El email es requerido';
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value as string)) error = 'No es un email válido';
+      if (!str) error = 'El email es requerido';
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str)) error = 'No es un email válido';
+      else if (str.length > 100) error = 'Máximo 100 caracteres';
       break;
     case 'ownerPassword':
-      if (!value) error = 'La contraseña es requerida';
-      else if ((value as string).length < 6) error = 'Mínimo 6 caracteres';
-      else if (!/[A-Z]/.test(value as string)) error = 'Debe contener al menos 1 mayúscula';
-      else if (!/[0-9]/.test(value as string)) error = 'Debe contener al menos 1 número';
+      if (!str) error = 'La contraseña es requerida';
+      else if (str.length < 6) error = 'Mínimo 6 caracteres';
+      else if (!/[A-Z]/.test(str)) error = 'Debe contener al menos 1 mayúscula';
+      else if (!/[0-9]/.test(str)) error = 'Debe contener al menos 1 número';
       break;
     case 'confirmPassword':
-      if (value !== ownerPassword) error = 'Las contraseñas no coinciden';
+      if (str !== ownerPassword) error = 'Las contraseñas no coinciden';
       break;
     case 'acceptTerms':
       if (value === false) error = 'Debes aceptar los términos';
@@ -83,7 +143,7 @@ const RegistrationPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    const val = type === 'checkbox' ? checked : value;
+    const val: string | boolean = type === 'checkbox' ? checked : formatField(name, value);
     setFormData(prev => ({ ...prev, [name]: val }));
     if (globalError) setGlobalError(null);
     const errorMsg = validateField(name, val, formData.ownerPassword);
@@ -151,16 +211,21 @@ const RegistrationPage = () => {
         state: { companyName: response.companyName || requestData.companyName, ruc: requestData.ruc, companyEmail: requestData.companyEmail, fullName: response.fullName, ownerEmail: response.email, token: response.token },
       });
     } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response) {
-        const { status, data } = error.response;
-        if (status === 409) setGlobalError('Este email ya está registrado. Inicia sesión para acceder a tu cuenta.');
-        else if (status === 422) setGlobalError((data as Record<string, unknown>)?.message as string || 'Datos inválidos. Revisa los campos del formulario.');
-        else if (status === 429) setGlobalError('Demasiados intentos. Intenta de nuevo en unos minutos.');
-        else setGlobalError((data as Record<string, unknown>)?.message as string || 'Error en el registro. Intente nuevamente.');
-      } else if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
-        setGlobalError('La conexión está tardando demasiado. Verifica tu internet.');
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED') {
+          setGlobalError('La conexión está tardando demasiado. Verifica tu internet.');
+        } else if (error.code === 'ERR_NETWORK') {
+          setGlobalError('No se pudo conectar al servidor. Verifica tu conexión.');
+        } else if (error.response) {
+          // PublicController.Onboarding envuelve toda excepción en BadRequest({ message })
+          const data = error.response.data as Record<string, unknown> | undefined;
+          const backendMsg = (data?.message as string | undefined)?.trim();
+          setGlobalError(backendMsg || 'Error en el registro. Intente nuevamente.');
+        } else {
+          setGlobalError('Ha ocurrido un error de conexión');
+        }
       } else {
-        setGlobalError('Ha ocurrido un error de conexión');
+        setGlobalError('Ha ocurrido un error inesperado');
       }
     } finally {
       setIsSubmitting(false);
@@ -202,6 +267,9 @@ const RegistrationPage = () => {
           autoComplete={opts.autoComplete as string || 'off'}
           autoCapitalize={opts.autoCapitalize as string || 'off'}
           spellCheck={opts.spellCheck as boolean ?? false}
+          maxLength={(opts.maxLength as number | undefined) ?? FIELD_MAX[name]}
+          inputMode={opts.inputMode as React.HTMLAttributes<HTMLInputElement>['inputMode']}
+          pattern={opts.pattern as string | undefined}
           className={`${errors[name] ? 'has-error' : ''} ${completedFields.has(name) ? 'field-complete' : ''}`}
         />
         {completedFields.has(name) && !errors[name] && name !== 'ownerPassword' && (
@@ -220,18 +288,18 @@ const RegistrationPage = () => {
           <div className="form-grid">
             <div className="section-title"><Store size={20} /> Detalles del Negocio</div>
             {renderInput('companyName', 'Nombre del Salón', 'Ej: Salón Elegance', { fullWidth: true, autoComplete: 'organization', autoCapitalize: 'words', spellCheck: true })}
-            {renderInput('ruc', 'RUC / NIT', 'Identificador fiscal', { autoComplete: 'tax-id', autoCapitalize: 'characters' })}
-            {renderInput('companyEmail', 'Email del Negocio', 'info@salon.com', { type: 'email', autoComplete: 'email' })}
+            {renderInput('ruc', 'RUC / NIT', 'Ej: 20512345678', { autoComplete: 'tax-id', autoCapitalize: 'characters', inputMode: 'text', pattern: '[A-Z0-9-]{4,20}' })}
+            {renderInput('companyEmail', 'Email del Negocio', 'info@salon.com', { type: 'email', autoComplete: 'email', inputMode: 'email' })}
             {renderInput('companyAddress', 'Dirección', 'Av. Principal 123, Ciudad', { fullWidth: true, autoComplete: 'street-address', autoCapitalize: 'sentences', spellCheck: true })}
-            {renderInput('companyPhone', 'Teléfono', '+54 9 11 1234 5678', { fullWidth: true, type: 'tel', autoComplete: 'tel' })}
+            {renderInput('companyPhone', 'Teléfono', '+5491112345678', { fullWidth: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', pattern: '\\+?[0-9]{7,15}' })}
           </div>
         )}
         {currentStep === 2 && (
           <div className="form-grid">
             <div className="section-title"><User size={20} /> Datos del Administrador</div>
-            {renderInput('ownerFirstName', 'Nombre', 'Tu nombre', { autoComplete: 'given-name', autoCapitalize: 'words', spellCheck: true })}
-            {renderInput('ownerLastName', 'Apellido', 'Tu apellido', { autoComplete: 'family-name', autoCapitalize: 'words', spellCheck: true })}
-            {renderInput('ownerEmail', 'Email Personal', 'El email para tu cuenta de acceso', { fullWidth: true, type: 'email', autoComplete: 'email' })}
+            {renderInput('ownerFirstName', 'Nombre', 'Tu nombre', { autoComplete: 'given-name', autoCapitalize: 'words', spellCheck: true, pattern: "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\\s'-]{2,50}" })}
+            {renderInput('ownerLastName', 'Apellido', 'Tu apellido', { autoComplete: 'family-name', autoCapitalize: 'words', spellCheck: true, pattern: "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\\s'-]{2,50}" })}
+            {renderInput('ownerEmail', 'Email Personal', 'El email para tu cuenta de acceso', { fullWidth: true, type: 'email', autoComplete: 'email', inputMode: 'email' })}
           </div>
         )}
         {currentStep === 3 && (
@@ -243,6 +311,7 @@ const RegistrationPage = () => {
                 <input type={showPassword ? 'text' : 'password'} name="ownerPassword" placeholder="Mínimo 6 chars, 1 Mayus, 1 Num"
                   value={formData.ownerPassword} onChange={handleChange} onFocus={() => handleFocus('ownerPassword')} onBlur={handleBlur}
                   autoComplete="new-password" autoCapitalize="off" spellCheck={false}
+                  maxLength={FIELD_MAX.ownerPassword}
                   className={`${errors.ownerPassword ? 'has-error' : ''} ${completedFields.has('ownerPassword') ? 'field-complete' : ''}`} />
                 <button type="button" className="icon-right" onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
@@ -261,6 +330,7 @@ const RegistrationPage = () => {
                 <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" placeholder="Repite la contraseña"
                   value={formData.confirmPassword} onChange={handleChange} onFocus={() => handleFocus('confirmPassword')} onBlur={handleBlur}
                   autoComplete="new-password" autoCapitalize="off" spellCheck={false}
+                  maxLength={FIELD_MAX.confirmPassword}
                   className={`${errors.confirmPassword ? 'has-error' : ''} ${completedFields.has('confirmPassword') ? 'field-complete' : ''}`} />
                 <button type="button" className="icon-right" onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
