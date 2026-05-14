@@ -61,6 +61,7 @@
   margin: 0 auto 2rem;
   display: flex;
   justify-content: center;
+  position: relative;
 }
 
 .icon-circle {
@@ -73,6 +74,34 @@
   justify-content: center;
   color: hsl(335, 75%, 55%); /* Bright glamorous Pink */
   box-shadow: 0 0 30px rgba(235, 70, 130, 0.25); /* Pink glow */
+  position: relative;
+  z-index: 1;
+}
+
+.ripple-ring {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid rgba(235, 70, 130, 0.3);
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ripple-ring:nth-child(2) {
+  animation: ripple 2s ease-out 0.3s infinite;
+}
+
+.ripple-ring:nth-child(3) {
+  animation: ripple 2s ease-out 0.8s infinite;
+  border-color: rgba(201, 169, 110, 0.25);
+}
+
+.ripple-ring:nth-child(4) {
+  animation: ripple 2s ease-out 1.3s infinite;
+  border-color: rgba(168, 85, 247, 0.2);
 }
 
 .confirmation-header h1 {
@@ -111,6 +140,12 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.summary-list li.animate-slide-left {
+  opacity: 0;
 }
 
 .summary-info {
@@ -163,6 +198,7 @@
   gap: 0.75rem;
   color: var(--text-muted);
   font-weight: 500;
+  animation-fill-mode: forwards;
 }
 
 .todo-icon {
