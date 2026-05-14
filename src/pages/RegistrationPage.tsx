@@ -1,9 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Store, User, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import { OnboardingService, type OnboardingRequest } from '../services/onboardingService';
 import './RegistrationPage.css';
 import axios from 'axios';
+
+function validateField(name: string, value: string | boolean, ownerPassword: string = '') {
+  let error = '';
+  
+  switch (name) {
+    case 'companyName':
+    case 'ruc':
+    case 'companyAddress':
+    case 'companyPhone':
+    case 'ownerFirstName':
+    case 'ownerLastName':
+      if (!value || (typeof value === 'string' && value.trim() === '')) error = 'Este campo es requerido';
+      break;
+    case 'companyEmail':
+    case 'ownerEmail':
+      if (!value) {
+        error = 'El email es requerido';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value as string)) {
+        error = 'No es un email válido';
+      }
+      break;
+    case 'ownerPassword':
+      if (!value) {
+        error = 'La contraseña es requerida';
+      } else if ((value as string).length < 6) {
+        error = 'Mínimo 6 caracteres';
+      } else if (!/[A-Z]/.test(value as string)) {
+        error = 'Debe contener al menos 1 mayúscula';
+      } else if (!/[0-9]/.test(value as string)) {
+        error = 'Debe contener al menos 1 número';
+      }
+      break;
+    case 'confirmPassword':
+      if (value !== ownerPassword) {
+        error = 'Las contraseñas no coinciden';
+      }
+      break;
+    case 'acceptTerms':
+      if (value === false) {
+        error = 'Debes aceptar los términos';
+      }
+      break;
+  }
+  
+  return error;
+}
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -31,54 +77,6 @@ const RegistrationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
-
-  // Validation Logic
-  const validateField = (name: string, value: string | boolean) => {
-    let error = '';
-    
-    switch (name) {
-      case 'companyName':
-      case 'ruc':
-      case 'companyAddress':
-      case 'companyPhone':
-      case 'ownerFirstName':
-      case 'ownerLastName':
-        if (!value || (typeof value === 'string' && value.trim() === '')) error = 'Este campo es requerido';
-        break;
-      case 'companyEmail':
-      case 'ownerEmail':
-        if (!value) {
-          error = 'El email es requerido';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value as string)) {
-          error = 'No es un email válido';
-        }
-        break;
-      case 'ownerPassword':
-        if (!value) {
-          error = 'La contraseña es requerida';
-        } else if ((value as string).length < 6) {
-          error = 'Mínimo 6 caracteres';
-        } else if (!/[A-Z]/.test(value as string)) {
-          error = 'Debe contener al menos 1 mayúscula';
-        } else if (!/[0-9]/.test(value as string)) {
-          error = 'Debe contener al menos 1 número';
-        }
-        break;
-      case 'confirmPassword':
-        if (value !== formData.ownerPassword) {
-          error = 'Las contraseñas no coinciden';
-        }
-        break;
-      case 'acceptTerms':
-        if (value === false) {
-          error = 'Debes aceptar los términos';
-        }
-        break;
-    }
-    
-    return error;
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -93,7 +91,7 @@ const RegistrationPage = () => {
     if (globalError) setGlobalError(null);
 
     // Validate on change for better UX
-    const errorMsg = validateField(name, val);
+    const errorMsg = validateField(name, val, formData.ownerPassword);
     setErrors(prev => ({
       ...prev,
       [name]: errorMsg
@@ -107,18 +105,12 @@ const RegistrationPage = () => {
   };
 
   // Run full validation to enable/disable button
-  useEffect(() => {
-    let isValid = true;
+  const isFormValid = useMemo(() => {
     for (const key of Object.keys(formData)) {
-      const error = validateField(key, formData[key as keyof typeof formData]);
-      if (error) {
-        isValid = false;
-        break;
-      }
+      const error = validateField(key, formData[key as keyof typeof formData], formData.ownerPassword);
+      if (error) return false;
     }
-    // Also ensuring no active errors
-    const hasActiveErrors = Object.values(errors).some(err => err !== '');
-    setIsFormValid(isValid && !hasActiveErrors);
+    return !Object.values(errors).some(err => err !== '');
   }, [formData, errors]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -145,8 +137,8 @@ const RegistrationPage = () => {
       const response = await OnboardingService.registerSalon(requestData);
       
       // Save data locally
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('companyId', response.companyId);
+      sessionStorage.setItem('token', response.token);
+      sessionStorage.setItem('companyId', response.companyId);
       
       // Redirect to next step with state data for the Confirmation Screen
       navigate('/step3', {
@@ -160,9 +152,20 @@ const RegistrationPage = () => {
         }
       });
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
-        setGlobalError(error.response.data?.message || 'Error en el registro. Intente nuevamente.');
+        const { status, data } = error.response;
+        if (status === 409) {
+          setGlobalError('Este email ya está registrado. Inicia sesión para acceder a tu cuenta.');
+        } else if (status === 422) {
+          setGlobalError((data as Record<string, unknown>)?.message as string || 'Datos inválidos. Revisa los campos del formulario.');
+        } else if (status === 429) {
+          setGlobalError('Demasiados intentos. Intenta de nuevo en unos minutos.');
+        } else {
+          setGlobalError((data as Record<string, unknown>)?.message as string || 'Error en el registro. Intente nuevamente.');
+        }
+      } else if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
+        setGlobalError('La conexión está tardando demasiado. Verifica tu internet.');
       } else {
         setGlobalError('Ha ocurrido un error de conexión');
       }
@@ -199,6 +202,9 @@ const RegistrationPage = () => {
                   placeholder="Ej: Salón Elegance"
                   value={formData.companyName}
                   onChange={handleChange}
+                  autoComplete="organization"
+                  autoCapitalize="words"
+                  spellCheck
                   className={errors.companyName ? 'has-error' : ''}
                 />
               </div>
@@ -214,6 +220,9 @@ const RegistrationPage = () => {
                   placeholder="Identificador fiscal"
                   value={formData.ruc}
                   onChange={handleChange}
+                  autoComplete="tax-id"
+                  autoCapitalize="characters"
+                  spellCheck={false}
                   className={errors.ruc ? 'has-error' : ''}
                 />
               </div>
@@ -229,6 +238,9 @@ const RegistrationPage = () => {
                   placeholder="info@salon.com"
                   value={formData.companyEmail}
                   onChange={handleChange}
+                  autoComplete="email"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   className={errors.companyEmail ? 'has-error' : ''}
                 />
               </div>
@@ -244,6 +256,9 @@ const RegistrationPage = () => {
                   placeholder="Av. Principal 123, Ciudad"
                   value={formData.companyAddress}
                   onChange={handleChange}
+                  autoComplete="street-address"
+                  autoCapitalize="sentences"
+                  spellCheck
                   className={errors.companyAddress ? 'has-error' : ''}
                 />
               </div>
@@ -254,11 +269,14 @@ const RegistrationPage = () => {
               <label>Teléfono *</label>
               <div className="input-wrapper">
                 <input 
-                  type="text" 
+                  type="tel" 
                   name="companyPhone" 
                   placeholder="+54 9 11 1234 5678"
                   value={formData.companyPhone}
                   onChange={handleChange}
+                  autoComplete="tel"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   className={errors.companyPhone ? 'has-error' : ''}
                 />
               </div>
@@ -281,6 +299,9 @@ const RegistrationPage = () => {
                   placeholder="Tu nombre"
                   value={formData.ownerFirstName}
                   onChange={handleChange}
+                  autoComplete="given-name"
+                  autoCapitalize="words"
+                  spellCheck
                   className={errors.ownerFirstName ? 'has-error' : ''}
                 />
               </div>
@@ -296,6 +317,9 @@ const RegistrationPage = () => {
                   placeholder="Tu apellido"
                   value={formData.ownerLastName}
                   onChange={handleChange}
+                  autoComplete="family-name"
+                  autoCapitalize="words"
+                  spellCheck
                   className={errors.ownerLastName ? 'has-error' : ''}
                 />
               </div>
@@ -311,6 +335,9 @@ const RegistrationPage = () => {
                   placeholder="El email para tu cuenta de acceso"
                   value={formData.ownerEmail}
                   onChange={handleChange}
+                  autoComplete="email"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   className={errors.ownerEmail ? 'has-error' : ''}
                 />
               </div>
@@ -326,13 +353,16 @@ const RegistrationPage = () => {
                   placeholder="Mínimo 6 chars, 1 Mayus, 1 Num"
                   value={formData.ownerPassword}
                   onChange={handleChange}
+                  autoComplete="new-password"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   className={errors.ownerPassword ? 'has-error' : ''}
                 />
                 <button 
                   type="button" 
                   className="icon-right" 
                   onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -349,13 +379,16 @@ const RegistrationPage = () => {
                   placeholder="Repite la contraseña"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  autoComplete="new-password"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   className={errors.confirmPassword ? 'has-error' : ''}
                 />
                 <button 
                   type="button" 
                   className="icon-right" 
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>

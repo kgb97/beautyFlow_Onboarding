@@ -1,17 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { CheckCircle, Store, Mail, FileText, UserCircle, ArrowRight, CheckSquare } from 'lucide-react';
 import './ConfirmationPage.css';
-
-interface ConfirmationState {
-  companyName?: string;
-  ruc?: string;
-  companyEmail?: string;
-  fullName?: string;
-  ownerEmail?: string;
-  token?: string;
-}
 
 interface JwtPayload {
   unique_name?: string;     // Usually mapped to email in .NET Identity
@@ -19,50 +10,55 @@ interface JwtPayload {
   given_name?: string;      // Usually mapped to FullName
   nameid?: string;          // User ID
   role?: string | string[]; // User roles
-  [key: string]: any;
+  [key: string]: unknown;
+}
+
+type ConfirmationState = {
+  companyName: string;
+  ruc: string;
+  companyEmail: string;
+  fullName: string;
+  ownerEmail: string;
+}
+
+function parseConfirmData(location: ReturnType<typeof useLocation>): ConfirmationState {
+  const stateData = location.state as Record<string, unknown> | null;
+
+  let decodedFullName = '';
+  let decodedEmail = '';
+
+  const currentToken = (stateData?.token as string | undefined) || sessionStorage.getItem('token');
+
+  if (currentToken) {
+    try {
+      const decoded = jwtDecode<JwtPayload>(currentToken);
+      decodedEmail = decoded.email || decoded.unique_name || '';
+      decodedFullName = decoded.given_name || (decoded.name as string) || '';
+    } catch {
+      console.error("Invalid token format");
+    }
+  }
+
+  return {
+    companyName: (stateData?.companyName as string) || 'Tu Salón',
+    ruc: (stateData?.ruc as string) || 'No especificado',
+    companyEmail: (stateData?.companyEmail as string) || 'No especificado',
+    fullName: (stateData?.fullName as string) || decodedFullName || 'Usuario',
+    ownerEmail: (stateData?.ownerEmail as string) || decodedEmail || 'tu-email@ejemplo.com'
+  };
 }
 
 const ConfirmationPage = () => {
   const location = useLocation();
-  const [data, setData] = useState<ConfirmationState>({});
-
-  useEffect(() => {
-    // 1. Initial attempt: Grab data from router state (passed from RegistrationPage)
-    let stateData = location.state as ConfirmationState;
-    let decodedFullName = '';
-    let decodedEmail = '';
-    
-    // 2. Fallback: Parse Token from state or from localStorage
-    const currentToken = stateData?.token || localStorage.getItem('token');
-    
-    if (currentToken) {
-      try {
-        const decoded = jwtDecode<JwtPayload>(currentToken);
-        // Map common JWT claims 
-        decodedEmail = decoded.email || decoded.unique_name || '';
-        decodedFullName = decoded.given_name || decoded.name || '';
-      } catch (error) {
-        console.error("Invalid token format", error);
-      }
-    }
-
-    // Merge state with fallback data from JWT
-    setData({
-      companyName: stateData?.companyName || 'Tu Salón',
-      ruc: stateData?.ruc || 'No especificado',
-      companyEmail: stateData?.companyEmail || 'No especificado',
-      fullName: stateData?.fullName || decodedFullName || 'Usuario',
-      ownerEmail: stateData?.ownerEmail || decodedEmail || 'tu-email@ejemplo.com'
-    });
-  }, [location]);
+  const data = useMemo(() => parseConfirmData(location), [location]);
 
   const handleGoToPortal = () => {
     const portalAdminUrl = import.meta.env.VITE_PORTAL_ADMIN_URL || 'http://localhost:5173';
-    const currentToken = localStorage.getItem('token');
-    const companyId = localStorage.getItem('companyId') || '';
+    const currentToken = sessionStorage.getItem('token');
+    const companyId = sessionStorage.getItem('companyId') || '';
     
     if (currentToken) {
-      window.location.href = `${portalAdminUrl}/login?t=${currentToken}&c=${companyId}`;
+      window.location.href = `${portalAdminUrl}/login#t=${currentToken}&c=${companyId}`;
     } else {
       window.location.href = portalAdminUrl;
     }

@@ -1,8 +1,19 @@
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Scissors, CalendarHeart, Tv, Users, ArrowRight } from 'lucide-react';
+import { Scissors, CalendarHeart, Tv, Users, ArrowRight, Menu, X } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => !prev);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+  }, []);
+
   return (
     <div className="landing-wrapper">
       {/* Abstract Background Elements */}
@@ -17,10 +28,19 @@ const LandingPage = () => {
             <span className="logo-icon">✨</span>
             <span className="logo-text">BeautyFlow</span>
           </div>
-          <div className="nav-actions animate-fade-in stagger-1">
-            <Link to="/registro" className="btn btn-primary">Registrar mi Salón</Link>
+          <button 
+            className="hamburger-btn animate-fade-in" 
+            onClick={toggleMobileMenu}
+            aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <div className={`nav-actions animate-fade-in stagger-1 ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+            <Link to="/registro" className="btn btn-primary" onClick={closeMobileMenu}>Registrar mi Salón</Link>
           </div>
         </div>
+        {isMobileMenuOpen && <div className="mobile-overlay" onClick={closeMobileMenu}></div>}
       </nav>
 
       {/* Hero Section */}

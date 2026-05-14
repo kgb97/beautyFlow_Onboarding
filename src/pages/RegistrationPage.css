@@ -250,3 +250,25 @@
     gap: 2rem;
   }
 }
+
+@media (max-width: 400px) {
+  .registration-wrapper {
+    padding: 2rem 0.5rem;
+  }
+  .registration-card {
+    border-radius: var(--radius-md);
+  }
+  .registration-header {
+    padding: 1.5rem 1rem 0.75rem;
+  }
+  .registration-header h1 {
+    font-size: 1.75rem;
+  }
+  .registration-body {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+  .form-grid {
+    gap: 1rem;
+  }
+}
