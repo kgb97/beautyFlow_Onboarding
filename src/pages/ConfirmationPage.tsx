@@ -93,7 +93,7 @@ const ConfirmationPage = () => {
         </div>
 
         <div className="confirmation-header animate-slide-up delay-1">
-          <h1>¡Bienvenido a BeautyFlow, {data.fullName?.split(' ')[0]}!</h1>
+          <h1>¡Bienvenido a iziSalon, {data.fullName?.split(' ')[0]}!</h1>
           <p>Tu salón <strong>"{data.companyName}"</strong> ha sido creado exitosamente.</p>
         </div>
 

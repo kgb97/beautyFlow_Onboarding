@@ -16,7 +16,7 @@ import WhatsAppCta from '../components/WhatsAppCta';
 import './RegistrationPage.css';
 import axios from 'axios';
 
-// Limites alineados con la API (FluentValidation en BeautyFlow.Application/Validators/OnboardingValidator.cs)
+// Limites alineados con la API (FluentValidation en IziSalon.Application/Validators/OnboardingValidator.cs)
 const FIELD_MAX: Record<string, number> = {
   companyName: 100,
   ruc: 20,
@@ -440,7 +440,7 @@ const RegistrationPage = () => {
             </div>
             <div className="terms-group">
               <input type="checkbox" id="acceptTerms" name="acceptTerms" checked={formData.acceptTerms} onChange={handleChange} />
-              <label htmlFor="acceptTerms">He leído y acepto los <span className="terms-link-pending">Términos y Condiciones</span> y la Política de Privacidad de BeautyFlow.</label>
+              <label htmlFor="acceptTerms">He leído y acepto los <span className="terms-link-pending">Términos y Condiciones</span> y la Política de Privacidad de iziSalon.</label>
             </div>
           </div>
         )}

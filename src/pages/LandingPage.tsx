@@ -143,7 +143,7 @@ const LandingPage = () => {
         <div className="container nav-container">
           <div className="logo">
             <span className="logo-icon">✨</span>
-            <span className="logo-text">BeautyFlow</span>
+            <span className="logo-text">iziSalon</span>
           </div>
           <button className="hamburger-btn" onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={isMobileMenuOpen}>
@@ -309,7 +309,7 @@ const LandingPage = () => {
           <ScrollReveal animation="bounce-in">
             <div className="cta-card glass-panel text-center">
               <h2>¿Listo para transformar tu salón?</h2>
-              <p>Unite a más de {count2k.toLocaleString()} salones que ya confían en BeautyFlow.</p>
+              <p>Unite a más de {count2k.toLocaleString()} salones que ya confían en iziSalon.</p>
               <Link to="/registro" className="btn btn-primary btn-lg animate-pulse-glow">
                 Quiero empezar ahora <ArrowRight size={20} className="btn-arrow" />
               </Link>
@@ -328,7 +328,7 @@ const LandingPage = () => {
       <footer className="footer section">
         <div className="container footer-content">
           <div className="footer-brand">
-            <div className="logo"><span className="logo-icon">✨</span><span className="logo-text">BeautyFlow</span></div>
+            <div className="logo"><span className="logo-icon">✨</span><span className="logo-text">iziSalon</span></div>
             <p>Elevando el standard de la industria de la belleza.</p>
           </div>
           <div className="footer-links">
@@ -338,7 +338,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="shimmer-divider" />
-        <div className="container footer-bottom"><p>© 2026 BeautyFlow. Todos los derechos reservados.</p></div>
+        <div className="container footer-bottom"><p>© 2026 iziSalon. Todos los derechos reservados.</p></div>
       </footer>
     </div>
   );

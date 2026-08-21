@@ -34,7 +34,7 @@ const WhatsAppCta = () => {
       // Si falla el registro del lead, igual dejamos que la persona hable por WhatsApp.
     } finally {
       setIsSending(false);
-      window.open(waLink(whatsappNumber, `Hola, soy ${firstName} ${lastName}. Quiero saber más sobre BeautyFlow.`), '_blank');
+      window.open(waLink(whatsappNumber, `Hola, soy ${firstName} ${lastName}. Quiero saber más sobre iziSalon.`), '_blank');
       setIsFormOpen(false);
       setFirstName(''); setLastName(''); setPhone('');
     }

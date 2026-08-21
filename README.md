@@ -1,8 +1,8 @@
 <div align="center">
 
-# 💅 BeautyFlow — Onboarding Portal
+# 💅 iziSalon — Onboarding Portal
 
-**El flujo de registro y activación de nuevos salones en la plataforma BeautyFlow.**
+**El flujo de registro y activación de nuevos salones en la plataforma iziSalon.**
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -15,7 +15,7 @@
 
 ## 📌 ¿Qué es este módulo?
 
-El **Onboarding Portal** es la puerta de entrada al ecosistema BeautyFlow. Permite que los propietarios de nuevos salones de belleza se **registren, configuren su empresa y activen su cuenta** mediante un flujo guiado de 3 pasos, completamente desacoplado del Portal Administrativo.
+El **Onboarding Portal** es la puerta de entrada al ecosistema iziSalon. Permite que los propietarios de nuevos salones de belleza se **registren, configuren su empresa y activen su cuenta** mediante un flujo guiado de 3 pasos, completamente desacoplado del Portal Administrativo.
 
 Una vez completado el registro, el sistema genera automáticamente las credenciales del salón y habilita el acceso al Portal Admin y al Booking Público.
 
@@ -79,7 +79,7 @@ npm run dev
 
 | Variable | Descripción | Ejemplo |
 |----------|-------------|---------|
-| `VITE_API_URL` | URL base del API de BeautyFlow | `https://localhost:44383` |
+| `VITE_API_URL` | URL base del API de iziSalon | `https://localhost:44383` |
 
 ---
 
@@ -97,10 +97,10 @@ npm run dev
 
 ---
 
-## 🔗 Integración con el Ecosistema BeautyFlow
+## 🔗 Integración con el Ecosistema iziSalon
 
 ```
-[Onboarding Portal]  ──POST /api/auth/register──►  [BeautyFlow API]
+[Onboarding Portal]  ──POST /api/auth/register──►  [iziSalon API]
                                                           │
                                                           ▼
 [Portal Admin]  ◄──── JWT Token + companyId ─────  [Auth Service]
@@ -126,7 +126,7 @@ npm run lint      # Linter (ESLint + TypeScript rules)
 
 ## 🎨 Sistema de Diseño
 
-El portal usa la paleta **Femenina & Elegante** de BeautyFlow:
+El portal usa la paleta **Femenina & Elegante** de iziSalon:
 
 | Token | Valor | Uso |
 |-------|-------|-----|
@@ -144,7 +144,7 @@ Estos mismos valores se replican manualmente en `src/index.css` de los otros 3 f
 
 <div align="center">
 
-**BeautyFlow** · Portal de Onboarding · 2025
+**iziSalon** · Portal de Onboarding · 2025
 
 *Construido con ❤️ para empoderar salones de belleza*
 
