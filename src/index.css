@@ -9,7 +9,11 @@
   
   --secondary: hsl(280, 50%, 65%); /* Soft Lilac */
   --accent: hsl(30, 80%, 65%); /* Rose Gold / Warm Copper */
-  
+
+  --danger: #dc2626;
+  --success: #10b981;
+  --warning: #f59e0b;
+
   --bg-color: hsl(335, 20%, 98%); /* Soft Blush White */
   --bg-surface: hsl(0, 0%, 100%);
   --text-main: hsl(335, 60%, 15%); /* Deep Plum/Eggplant */

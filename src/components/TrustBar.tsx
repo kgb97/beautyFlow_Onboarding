@@ -1,11 +1,11 @@
 import { Scissors } from 'lucide-react';
 
 const LOGOS = [
-  { name: 'Salón Glamour', color: '#db2777' },
-  { name: 'Studio Luxe', color: '#9333ea' },
-  { name: 'Belleza Total', color: '#c9a96e' },
-  { name: 'Deluxe Spa', color: '#ec4899' },
-  { name: 'Reina Beauty', color: '#a855f7' },
+  { name: 'Salón Glamour', color: 'var(--primary)' },
+  { name: 'Studio Luxe', color: 'var(--secondary)' },
+  { name: 'Belleza Total', color: 'var(--accent)' },
+  { name: 'Deluxe Spa', color: 'var(--primary-hover)' },
+  { name: 'Reina Beauty', color: 'var(--secondary)' },
 ];
 
 const TrustBar = () => (

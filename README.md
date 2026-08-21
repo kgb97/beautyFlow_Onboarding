@@ -128,12 +128,17 @@ npm run lint      # Linter (ESLint + TypeScript rules)
 
 El portal usa la paleta **Femenina & Elegante** de BeautyFlow:
 
-| Token | Color | Uso |
+| Token | Valor | Uso |
 |-------|-------|-----|
-| `--primary` | `#db2777` | Botones, CTAs, acentos |
-| `--secondary` | `#9333ea` | Gradientes, badges |
-| `--rose-gold` | `#c9a96e` | Decorativos premium |
-| `--bg-light` | `#fdf2f8` | Fondos suaves |
+| `--primary` | `hsl(335, 75%, 55%)` | Botones, CTAs, acentos |
+| `--secondary` | `hsl(280, 50%, 65%)` | Gradientes, badges |
+| `--accent` | `hsl(30, 80%, 65%)` | Decorativos premium (rose gold) |
+| `--bg-color` | `hsl(335, 20%, 98%)` | Fondos suaves |
+| `--danger` | `#dc2626` | Errores, validaciones fallidas |
+| `--success` | `#10b981` | Confirmaciones, estados completos |
+| `--warning` | `#f59e0b` | Estados intermedios (ej. fuerza de contraseña) |
+
+Estos mismos valores se replican manualmente en `src/index.css` de los otros 3 frontends (`beautyFlow_PortalAdmin`, `beautyFlow_BookingPublico`, `beautyFlow_DisplayTV`) — no hay paquete de design system compartido entre repos.
 
 ---
 

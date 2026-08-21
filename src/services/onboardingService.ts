@@ -1,6 +1,7 @@
 import { apiClient } from './apiClient';
 
 export interface OnboardingRequest {
+  planId: string;
   companyName: string;
   ruc: string;
   companyEmail: string;
@@ -19,6 +20,7 @@ export interface OnboardingResponse {
   email: string;
   fullName: string;
   message: string;
+  isPaymentPending: boolean;
 }
 
 export const OnboardingService = {

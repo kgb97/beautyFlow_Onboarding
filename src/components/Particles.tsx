@@ -30,7 +30,7 @@ function generateParticles(): ParticleConfig[] {
       delay: randomBetween(0, 5),
       duration: randomBetween(8, 15),
       type: i % 3 === 0 ? 'rose' : 'sparkle',
-      color: i % 2 === 0 ? '#db2777' : '#c9a96e',
+      color: i % 2 === 0 ? 'var(--primary)' : 'var(--accent)',
     });
   }
   return items;

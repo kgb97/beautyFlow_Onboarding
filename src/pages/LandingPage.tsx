@@ -11,8 +11,10 @@ import HairDryerSVG from '../components/svg/HairDryerSVG';
 import ScissorsAnimatedSVG from '../components/svg/ScissorsAnimatedSVG';
 import ScrollReveal from '../components/ScrollReveal';
 import TrustBar from '../components/TrustBar';
+import PlansSection from '../components/PlansSection';
 import { useCountUp } from '../hooks/useCountUp';
 import ClickSparkleStyles from '../components/svg/ClickSparkleStyles';
+import WhatsAppCta from '../components/WhatsAppCta';
 import './LandingPage.css';
 
 function handleTiltMove(e: React.MouseEvent<HTMLDivElement>) {
@@ -107,6 +109,16 @@ const LandingPage = () => {
     return () => { if (hero) hero.removeEventListener('mousemove', handleMouseMove); };
   }, []);
 
+  // Cierra el menú móvil con Escape (el overlay no es alcanzable por teclado más allá del botón)
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
+
   const chairTilt = chairHover ? Math.max(-20, Math.min(20, (mousePos.y - 0.5) * 60)) : 0;
   const mirrorShineX = mousePos.x * 100;
   const mirrorShineY = mousePos.y * 100;
@@ -124,6 +136,7 @@ const LandingPage = () => {
     <div className="landing-wrapper">
       <ClickSparkleStyles />
       <Particles />
+      <WhatsAppCta />
 
       {/* Nav */}
       <nav className={`glass-nav ${scrolled ? 'nav-compact' : ''}`}>
@@ -287,6 +300,9 @@ const LandingPage = () => {
       {/* Trust Bar */}
       <TrustBar />
 
+      {/* Planes */}
+      <PlansSection />
+
       {/* CTA Final */}
       <section className="cta-final section">
         <div className="container">
@@ -318,7 +334,7 @@ const LandingPage = () => {
           <div className="footer-links">
             <div className="footer-col"><h4>Producto</h4><Link to="/registro">Comenzar gratis</Link></div>
             <div className="footer-col"><h4>Contacto</h4><p>hola@beautyflow.com</p></div>
-            <div className="footer-col"><h4>Legal</h4><a href="#">Términos</a><a href="#">Privacidad</a></div>
+            <div className="footer-col"><h4>Legal</h4><p>Términos (próximamente)</p><p>Privacidad (próximamente)</p></div>
           </div>
         </div>
         <div className="shimmer-divider" />

@@ -12,7 +12,7 @@ interface ConfettiPiece {
 }
 
 const CONFETTI_COUNT = 100;
-const COLORS = ['#db2777', '#ec4899', '#9333ea', '#c9a96e', '#f472b6', '#a855f7', '#f59e0b'];
+const COLORS = ['var(--primary)', 'var(--primary-hover)', 'var(--secondary)', 'var(--accent)', 'var(--success)', 'var(--warning)'];
 
 function generatePieces(): ConfettiPiece[] {
   const items: ConfettiPiece[] = [];

@@ -1,7 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3 } from 'lucide-react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3, CreditCard, Loader2 } from 'lucide-react';
 import { OnboardingService, type OnboardingRequest } from '../services/onboardingService';
+import { PlansService, type PublicPlanDto } from '../services/plansService';
+import { PlatformSettingsService, type PlatformSettingsDto } from '../services/platformSettingsService';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
 import ScissorsSpinnerSVG from '../components/svg/ScissorsSpinnerSVG';
 import ScissorsAnimatedSVG from '../components/svg/ScissorsAnimatedSVG';
@@ -10,6 +12,7 @@ import NailPolishSVG from '../components/svg/NailPolishSVG';
 import SalonBuddy from '../components/SalonBuddy';
 import BeautyProgress from '../components/BeautyProgress';
 import ClickSparkleStyles from '../components/svg/ClickSparkleStyles';
+import WhatsAppCta from '../components/WhatsAppCta';
 import './RegistrationPage.css';
 import axios from 'axios';
 
@@ -101,34 +104,46 @@ function validateField(name: string, value: string | boolean, ownerPassword: str
     case 'acceptTerms':
       if (value === false) error = 'Debes aceptar los términos';
       break;
+    case 'planId':
+      if (!str) error = 'Debes elegir un plan';
+      break;
   }
   return error;
 }
 
 const STEP_FIELDS: Record<number, string[]> = {
-  1: ['companyName', 'ruc', 'companyEmail', 'companyAddress', 'companyPhone'],
-  2: ['ownerFirstName', 'ownerLastName', 'ownerEmail'],
-  3: ['ownerPassword', 'confirmPassword', 'acceptTerms'],
-  4: [],
+  1: ['planId'],
+  2: ['companyName', 'ruc', 'companyEmail', 'companyAddress', 'companyPhone'],
+  3: ['ownerFirstName', 'ownerLastName', 'ownerEmail'],
+  4: ['ownerPassword', 'confirmPassword', 'acceptTerms'],
+  5: [],
 };
 
-const STEP_LABELS = ['Tu Salón', 'Tu Equipo', 'Seguridad', 'Revisar'];
-const STEP_ICONS = [Store, User, ShieldCheck, Check];
+const PORTAL_ADMIN_LOGIN_URL = `${import.meta.env.VITE_PORTAL_ADMIN_URL || 'http://localhost:5173'}/login`;
+
+const STEP_LABELS = ['Tu Plan', 'Tu Salón', 'Tu Equipo', 'Seguridad', 'Revisar'];
+const STEP_ICONS = [CreditCard, Store, User, ShieldCheck, Check];
 const STEP_HINTS: Record<number, { title: string; desc: string }> = {
-  1: { title: 'Datos del negocio', desc: 'Contanos sobre tu salón. Nombre, dirección y contacto para que tus clientes te encuentren.' },
-  2: { title: 'Datos del administrador', desc: 'Información de la persona que gestionará el salón. Vas a ingresar con estos datos.' },
-  3: { title: 'Seguridad de la cuenta', desc: 'Creá una contraseña segura para proteger tu cuenta. Incluye mayúscula y número.' },
-  4: { title: 'Revisión final', desc: 'Verificá que todos los datos sean correctos antes de crear tu salón.' },
+  1: { title: 'Elegí tu plan', desc: 'Podés cambiarlo más adelante desde el panel de administración.' },
+  2: { title: 'Datos del negocio', desc: 'Contanos sobre tu salón. Nombre, dirección y contacto para que tus clientes te encuentren.' },
+  3: { title: 'Datos del administrador', desc: 'Información de la persona que gestionará el salón. Vas a ingresar con estos datos.' },
+  4: { title: 'Seguridad de la cuenta', desc: 'Creá una contraseña segura para proteger tu cuenta. Incluye mayúscula y número.' },
+  5: { title: 'Revisión final', desc: 'Verificá que todos los datos sean correctos antes de crear tu salón.' },
 };
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] = useState({
+    planId: '',
     companyName: '', ruc: '', companyEmail: '', companyAddress: '', companyPhone: '',
     ownerFirstName: '', ownerLastName: '', ownerEmail: '',
     ownerPassword: '', confirmPassword: '', acceptTerms: false,
   });
+  const [plans, setPlans] = useState<PublicPlanDto[]>([]);
+  const [isLoadingPlans, setIsLoadingPlans] = useState(true);
+  const [paymentSettings, setPaymentSettings] = useState<PlatformSettingsDto | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -139,7 +154,31 @@ const RegistrationPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
-  const TOTAL_STEPS = 4;
+  const TOTAL_STEPS = 5;
+
+  const handleSelectPlan = (plan: PublicPlanDto) => {
+    setFormData(prev => ({ ...prev, planId: plan.id }));
+    setErrors(prev => ({ ...prev, planId: '' }));
+    setCompletedFields(prev => new Set(prev).add('planId'));
+
+    const isPaid = (plan.priceMonthly ?? 0) > 0 && !plan.isTrial;
+    if (isPaid && !paymentSettings) {
+      PlatformSettingsService.getSettings().then(setPaymentSettings).catch(() => {});
+    }
+  };
+
+  useEffect(() => {
+    PlansService.getPlans()
+      .then(fetchedPlans => {
+        setPlans(fetchedPlans);
+        const preselectId = searchParams.get('plan');
+        const match = preselectId && fetchedPlans.find(p => p.id === preselectId);
+        if (match) handleSelectPlan(match);
+      })
+      .catch(() => setPlans([]))
+      .finally(() => setIsLoadingPlans(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -170,7 +209,7 @@ const RegistrationPage = () => {
   }, [completedFields]);
 
   const allStepsComplete = useMemo(() => {
-    for (let s = 1; s <= 3; s++) {
+    for (let s = 1; s <= 4; s++) {
       if (!stepIsComplete(s)) return false;
     }
     return Object.values(errors).every(e => e === '');
@@ -198,6 +237,7 @@ const RegistrationPage = () => {
     setGlobalError(null);
     try {
       const requestData: OnboardingRequest = {
+        planId: formData.planId,
         companyName: formData.companyName, ruc: formData.ruc,
         companyEmail: formData.companyEmail, companyAddress: formData.companyAddress,
         companyPhone: formData.companyPhone, ownerFirstName: formData.ownerFirstName,
@@ -208,7 +248,11 @@ const RegistrationPage = () => {
       sessionStorage.setItem('token', response.token);
       sessionStorage.setItem('companyId', response.companyId);
       navigate('/step3', {
-        state: { companyName: response.companyName || requestData.companyName, ruc: requestData.ruc, companyEmail: requestData.companyEmail, fullName: response.fullName, ownerEmail: response.email, token: response.token },
+        state: {
+          companyName: response.companyName || requestData.companyName, ruc: requestData.ruc, companyEmail: requestData.companyEmail,
+          fullName: response.fullName, ownerEmail: response.email, token: response.token,
+          isPaymentPending: response.isPaymentPending,
+        },
       });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -232,14 +276,14 @@ const RegistrationPage = () => {
     }
   };
 
-  const completedSteps = [1, 2, 3].filter(s => stepIsComplete(s)).length;
-  const progressValue = Math.min(completedSteps / 3, 1);
+  const completedSteps = [1, 2, 3, 4].filter(s => stepIsComplete(s)).length;
+  const progressValue = Math.min(completedSteps / 4, 1);
 
   const renderStepIndicator = () => (
     <div className="step-indicator">
-      {[1, 2, 3, 4].map(s => {
+      {[1, 2, 3, 4, 5].map(s => {
         const Icon = STEP_ICONS[s - 1];
-        const isDone = s <= 3 ? stepIsComplete(s) : allStepsComplete;
+        const isDone = s <= 4 ? stepIsComplete(s) : allStepsComplete;
         return (
           <div key={s} className={`step-dot ${currentStep === s ? 'active' : ''} ${isDone ? 'done' : ''}`}>
             <div className="step-dot-circle">
@@ -254,9 +298,10 @@ const RegistrationPage = () => {
 
   const renderInput = (name: string, label: string, placeholder: string, opts: Record<string, unknown> = {}) => (
     <div className={`form-group ${opts.fullWidth ? 'full-width' : ''} ${completedFields.has(name) ? 'group-complete' : ''}`}>
-      <label>{label} *</label>
+      <label htmlFor={name}>{label} *</label>
       <div className="input-wrapper">
         <input
+          id={name}
           type={opts.type as string || 'text'}
           name={name}
           placeholder={placeholder}
@@ -285,6 +330,57 @@ const RegistrationPage = () => {
     return (
       <div key={currentStep} className={`step-content-wrapper ${animClass}`}>
         {currentStep === 1 && (
+          <div className="plan-picker">
+            <div className="section-title"><CreditCard size={20} /> Elegí tu Plan</div>
+            {isLoadingPlans ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><Loader2 className="spin" size={28} /></div>
+            ) : (
+              <div className="plan-cards">
+                {plans.map(plan => {
+                  const isSelected = formData.planId === plan.id;
+                  return (
+                    <button
+                      type="button"
+                      key={plan.id}
+                      className={`plan-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleSelectPlan(plan)}
+                    >
+                      {plan.isTrial && <span className="plan-badge-trial">Prueba {plan.trialDurationDays ?? ''} días</span>}
+                      <h3>{plan.name}</h3>
+                      <div className="plan-price">
+                        {plan.priceMonthly && plan.priceMonthly > 0 ? <>${plan.priceMonthly}<span>/mes</span></> : 'Gratis'}
+                      </div>
+                      {plan.description && <p className="plan-desc">{plan.description}</p>}
+                      <ul className="plan-limits">
+                        <li>{plan.maxBranches ?? 'Ilimitadas'} sucursal(es)</li>
+                        <li>{plan.maxStaff ?? 'Ilimitado'} staff</li>
+                        <li>{plan.maxClients ?? 'Ilimitados'} clientes</li>
+                        <li>{plan.maxAppointmentsPerMonth ?? 'Ilimitadas'} citas/mes</li>
+                      </ul>
+                      {isSelected && <span className="plan-selected-check"><Check size={16} /></span>}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            {errors.planId && <span className="error-text"><AlertCircle size={14} /> {errors.planId}</span>}
+
+            {paymentSettings && (
+              <div className="payment-info-panel">
+                <h4>Datos para el pago manual</h4>
+                <p className="text-muted-hint">Tu salón queda activo de inmediato. Realiza la transferencia y verificaremos tu pago en menos de 24hs.</p>
+                {paymentSettings.paymentAccounts.map(acc => (
+                  <div key={acc.id} className="payment-account-row">
+                    <strong>{acc.label}</strong> — {acc.bankName}, {acc.accountType} {acc.accountNumber} a nombre de {acc.accountHolderName}
+                    {acc.instructions && <div className="payment-instructions">{acc.instructions}</div>}
+                  </div>
+                ))}
+                {paymentSettings.paymentAccounts.length === 0 && <p className="text-muted-hint">Contáctanos por WhatsApp para coordinar el pago.</p>}
+              </div>
+            )}
+          </div>
+        )}
+        {currentStep === 2 && (
           <div className="form-grid">
             <div className="section-title"><Store size={20} /> Detalles del Negocio</div>
             {renderInput('companyName', 'Nombre del Salón', 'Ej: Salón Elegance', { fullWidth: true, autoComplete: 'organization', autoCapitalize: 'words', spellCheck: true })}
@@ -294,7 +390,7 @@ const RegistrationPage = () => {
             {renderInput('companyPhone', 'Teléfono', '+5491112345678', { fullWidth: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', pattern: '\\+?[0-9]{7,15}' })}
           </div>
         )}
-        {currentStep === 2 && (
+        {currentStep === 3 && (
           <div className="form-grid">
             <div className="section-title"><User size={20} /> Datos del Administrador</div>
             {renderInput('ownerFirstName', 'Nombre', 'Tu nombre', { autoComplete: 'given-name', autoCapitalize: 'words', spellCheck: true, pattern: "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\\s'-]{2,50}" })}
@@ -302,13 +398,13 @@ const RegistrationPage = () => {
             {renderInput('ownerEmail', 'Email Personal', 'El email para tu cuenta de acceso', { fullWidth: true, type: 'email', autoComplete: 'email', inputMode: 'email' })}
           </div>
         )}
-        {currentStep === 3 && (
+        {currentStep === 4 && (
           <div className="form-grid">
             <div className="section-title"><ShieldCheck size={20} /> Seguridad de Cuenta</div>
             <div className={`form-group ${completedFields.has('ownerPassword') ? 'group-complete' : ''}`}>
-              <label>Contraseña *</label>
+              <label htmlFor="ownerPassword">Contraseña *</label>
               <div className="input-wrapper">
-                <input type={showPassword ? 'text' : 'password'} name="ownerPassword" placeholder="Mínimo 6 chars, 1 Mayus, 1 Num"
+                <input id="ownerPassword" type={showPassword ? 'text' : 'password'} name="ownerPassword" placeholder="Mínimo 6 chars, 1 Mayus, 1 Num"
                   value={formData.ownerPassword} onChange={handleChange} onFocus={() => handleFocus('ownerPassword')} onBlur={handleBlur}
                   autoComplete="new-password" autoCapitalize="off" spellCheck={false}
                   maxLength={FIELD_MAX.ownerPassword}
@@ -325,9 +421,9 @@ const RegistrationPage = () => {
               <PasswordStrengthMeter password={formData.ownerPassword} />
             </div>
             <div className={`form-group ${completedFields.has('confirmPassword') ? 'group-complete' : ''}`}>
-              <label>Confirmar Contraseña *</label>
+              <label htmlFor="confirmPassword">Confirmar Contraseña *</label>
               <div className="input-wrapper">
-                <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" placeholder="Repite la contraseña"
+                <input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" placeholder="Repite la contraseña"
                   value={formData.confirmPassword} onChange={handleChange} onFocus={() => handleFocus('confirmPassword')} onBlur={handleBlur}
                   autoComplete="new-password" autoCapitalize="off" spellCheck={false}
                   maxLength={FIELD_MAX.confirmPassword}
@@ -344,16 +440,29 @@ const RegistrationPage = () => {
             </div>
             <div className="terms-group">
               <input type="checkbox" id="acceptTerms" name="acceptTerms" checked={formData.acceptTerms} onChange={handleChange} />
-              <label htmlFor="acceptTerms">He leído y acepto los <a href="#">Términos y Condiciones</a> y la Política de Privacidad de BeautyFlow.</label>
+              <label htmlFor="acceptTerms">He leído y acepto los <span className="terms-link-pending">Términos y Condiciones</span> y la Política de Privacidad de BeautyFlow.</label>
             </div>
           </div>
         )}
-        {currentStep === 4 && (
+        {currentStep === 5 && (
           <div className="review-step">
             <div className="section-title"><Check size={20} /> Revisa tus datos</div>
             <div className="review-card glass-panel">
-              <h4>🏪 {formData.companyName || 'Salón'}
+              <h4>💳 {plans.find(p => p.id === formData.planId)?.name || 'Plan'}
                 <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(1); }}><Edit3 size={14} /> Editar</button>
+              </h4>
+              <div className="review-grid">
+                <div style={{ gridColumn: '1/-1' }}>
+                  <span>Precio:</span> {(() => {
+                    const p = plans.find(pl => pl.id === formData.planId);
+                    return p?.priceMonthly ? `$${p.priceMonthly}/mes` : 'Gratis';
+                  })()}
+                </div>
+              </div>
+            </div>
+            <div className="review-card glass-panel">
+              <h4>🏪 {formData.companyName || 'Salón'}
+                <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(2); }}><Edit3 size={14} /> Editar</button>
               </h4>
               <div className="review-grid">
                 <div><span>RUC:</span> {formData.ruc}</div>
@@ -364,7 +473,7 @@ const RegistrationPage = () => {
             </div>
             <div className="review-card glass-panel">
               <h4>👤 {formData.ownerFirstName} {formData.ownerLastName}
-                <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(2); }}><Edit3 size={14} /> Editar</button>
+                <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(3); }}><Edit3 size={14} /> Editar</button>
               </h4>
               <div className="review-grid">
                 <div style={{ gridColumn: '1/-1' }}><span>Email:</span> {formData.ownerEmail}</div>
@@ -372,7 +481,7 @@ const RegistrationPage = () => {
             </div>
             <div className="review-card glass-panel">
               <h4>🔐 Seguridad
-                <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(3); }}><Edit3 size={14} /> Editar</button>
+                <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(4); }}><Edit3 size={14} /> Editar</button>
               </h4>
               <p className="review-pw-ok">✓ Contraseña configurada</p>
             </div>
@@ -381,7 +490,7 @@ const RegistrationPage = () => {
                 <AlertCircle size={20} />
                 <span>{globalError}</span>
                 {globalError.toLowerCase().includes('email') && (
-                  <div style={{ marginLeft: 'auto' }}><Link to="/login" style={{ color: '#991b1b', textDecoration: 'underline' }}>Iniciar Sesión</Link></div>
+                  <div style={{ marginLeft: 'auto' }}><a href={PORTAL_ADMIN_LOGIN_URL} style={{ color: 'var(--danger)', textDecoration: 'underline' }}>Iniciar Sesión</a></div>
                 )}
               </div>
             )}
@@ -394,6 +503,7 @@ const RegistrationPage = () => {
   return (
     <div className="registration-wrapper">
       <ClickSparkleStyles />
+      <WhatsAppCta />
       <div className="reg-bg-shape reg-shape-1"></div>
       <div className="reg-bg-shape reg-shape-2"></div>
       <div className="deco-float deco-comb" aria-hidden="true"><CombSVG size={28} /></div>
@@ -415,7 +525,7 @@ const RegistrationPage = () => {
           <p>Paso {currentStep} de {TOTAL_STEPS}: {STEP_LABELS[currentStep - 1]}</p>
         </div>
 
-        <BeautyProgress completed={completedSteps} total={3} />
+        <BeautyProgress completed={completedSteps} total={4} />
         {renderStepIndicator()}
 
         <div className="step-hint">
@@ -435,7 +545,7 @@ const RegistrationPage = () => {
             ) : <div />}
 
             {currentStep < TOTAL_STEPS ? (
-              <button type="button" className="btn btn-primary" onClick={goNext} disabled={currentStep <= 3 && !stepIsComplete(currentStep)}>
+              <button type="button" className="btn btn-primary" onClick={goNext} disabled={currentStep <= 4 && !stepIsComplete(currentStep)}>
                 Siguiente <ChevronRight size={18} />
               </button>
             ) : (
@@ -446,7 +556,7 @@ const RegistrationPage = () => {
           </div>
 
           <div className="login-link">
-            ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+            ¿Ya tienes cuenta? <a href={PORTAL_ADMIN_LOGIN_URL}>Inicia sesión</a>
           </div>
         </form>
       </div>

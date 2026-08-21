@@ -12,9 +12,9 @@ function getStrength(password: string): { score: number; label: string; color: s
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
-  if (score <= 1) return { score, label: 'Débil', color: '#ef4444', width: '33%' };
-  if (score <= 3) return { score, label: 'Media', color: '#f59e0b', width: '66%' };
-  return { score, label: 'Fuerte', color: '#10b981', width: '100%' };
+  if (score <= 1) return { score, label: 'Débil', color: 'var(--danger)', width: '33%' };
+  if (score <= 3) return { score, label: 'Media', color: 'var(--warning)', width: '66%' };
+  return { score, label: 'Fuerte', color: 'var(--success)', width: '100%' };
 }
 
 const PasswordStrengthMeter = ({ password }: PasswordStrengthMeterProps) => {

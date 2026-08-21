@@ -1,0 +1,103 @@
+.wa-fab {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #25d366;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  cursor: pointer;
+  z-index: 900;
+  transition: transform 0.2s ease;
+}
+
+.wa-fab:hover { transform: scale(1.08); }
+
+.wa-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.wa-modal-content {
+  background: var(--bg-surface);
+  width: 100%;
+  max-width: 380px;
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.wa-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.wa-modal-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.12);
+  color: #25d366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.wa-modal-content h3 { color: var(--text-main); margin-bottom: 0.35rem; }
+.wa-modal-desc { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem; }
+
+.wa-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  font-family: inherit;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+.wa-input:focus { outline: none; border-color: var(--primary); }
+
+.wa-submit-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: #25d366;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+.wa-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.spin { animation: wa-spin 1s linear infinite; }
+@keyframes wa-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 500px) {
+  .wa-fab { bottom: 1.25rem; right: 1.25rem; width: 52px; height: 52px; }
+}

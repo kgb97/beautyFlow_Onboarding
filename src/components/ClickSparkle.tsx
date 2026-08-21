@@ -8,7 +8,7 @@ interface Sparkle {
   color: string;
 }
 
-const SPARKLE_COLORS = ['#db2777', '#c9a96e', '#a855f7', '#ec4899'];
+const SPARKLE_COLORS = ['var(--primary)', 'var(--accent)', 'var(--secondary)', 'var(--primary-hover)'];
 
 const ClickSparkle = () => {
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
