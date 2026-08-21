@@ -85,7 +85,7 @@ const ConfirmationPage = () => {
       <div className="confirmation-card animate-fade-in">
         <div className="success-icon-container">
           <div className="icon-circle animate-bounce-in">
-            <CheckmarkAnimatedSVG size={64} className="check-icon" style={{ color: 'hsl(335, 75%, 55%)' }} />
+            <CheckmarkAnimatedSVG size={64} className="check-icon" style={{ color: '#16A34A' }} />
           </div>
           <div className="ripple-ring"></div>
           <div className="ripple-ring"></div>

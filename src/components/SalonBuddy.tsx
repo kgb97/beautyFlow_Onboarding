@@ -25,7 +25,7 @@ const SalonBuddy = ({ focusedField, hasErrors, progress }: SalonBuddyProps) => {
         right: 16,
         zIndex: 5,
         transition: 'transform 0.3s ease, filter 0.3s ease',
-        filter: progress >= 1 ? 'drop-shadow(0 0 12px rgba(219, 39, 119, 0.5))' : hasErrors ? 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.3))' : 'none',
+        filter: progress >= 1 ? 'drop-shadow(0 0 12px rgba(22, 163, 74, 0.5))' : hasErrors ? 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.3))' : 'none',
       }}
     >
       <SalonChairSVG size={56} />

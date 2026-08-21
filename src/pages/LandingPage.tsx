@@ -333,7 +333,7 @@ const LandingPage = () => {
           </div>
           <div className="footer-links">
             <div className="footer-col"><h4>Producto</h4><Link to="/registro">Comenzar gratis</Link></div>
-            <div className="footer-col"><h4>Contacto</h4><p>hola@beautyflow.com</p></div>
+            <div className="footer-col"><h4>Contacto</h4><p>hola@izisalon.com</p></div>
             <div className="footer-col"><h4>Legal</h4><p>Términos (próximamente)</p><p>Privacidad (próximamente)</p></div>
           </div>
         </div>
