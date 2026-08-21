@@ -138,7 +138,7 @@ El portal usa la paleta **Femenina & Elegante** de iziSalon:
 | `--success` | `#10b981` | Confirmaciones, estados completos |
 | `--warning` | `#f59e0b` | Estados intermedios (ej. fuerza de contraseña) |
 
-Estos mismos valores se replican manualmente en `src/index.css` de los otros 3 frontends (`beautyFlow_PortalAdmin`, `beautyFlow_BookingPublico`, `beautyFlow_DisplayTV`) — no hay paquete de design system compartido entre repos.
+Estos mismos valores se replican manualmente en `src/index.css` de los otros 3 frontends (`iziSalon_PortalAdmin`, `iziSalon_BookingPublico`, `iziSalon_DisplayTV`) — no hay paquete de design system compartido entre repos.
 
 ---
 
