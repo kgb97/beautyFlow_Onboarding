@@ -15,11 +15,11 @@ const MirrorSVG = ({ size = 64, className, style }: SVGProps) => (
     style={style}
   >
     {/* Stand base */}
-    <rect x="24" y="72" width="16" height="6" rx="2" fill="#d4af37" />
+    <rect x="24" y="72" width="16" height="6" rx="2" fill="#94A3B8" />
     {/* Stand pole */}
-    <rect x="30" y="52" width="4" height="22" rx="2" fill="#d4af37" />
+    <rect x="30" y="52" width="4" height="22" rx="2" fill="#94A3B8" />
     {/* Frame (oval) */}
-    <ellipse cx="32" cy="30" rx="22" ry="28" stroke="#d4af37" strokeWidth="4" fill="none" />
+    <ellipse cx="32" cy="30" rx="22" ry="28" stroke="#94A3B8" strokeWidth="4" fill="none" />
     {/* Glass */}
     <ellipse cx="32" cy="30" rx="19" ry="25" fill="url(#mirrorGradient)" opacity="0.85" />
     {/* Shine/reflection */}

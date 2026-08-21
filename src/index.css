@@ -1,34 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Theme: Feminine & Elegant Beauty Salon (Pink & Rose Gold) */
-  --hue-primary: 335; 
-  --primary: hsl(335, 75%, 55%); /* Lush Rose Pink */
-  --primary-hover: hsl(335, 75%, 45%);
-  --primary-light: hsl(335, 75%, 95%); /* Very soft blush for backgrounds */
-  
-  --secondary: hsl(280, 50%, 65%); /* Soft Lilac */
-  --accent: hsl(30, 80%, 65%); /* Rose Gold / Warm Copper */
+  /* Marca izi - capa INTERNA (roles fijos en toda la familia, ver Marca/paleta-y-tipografia.md).
+     Mismos tokens en PortalAdmin/BookingPublico/DisplayTV/SuperAdmin. */
+  --primary: #6366F1;        /* Indigo Electrico - accion principal */
+  --primary-hover: #4F46E5;
+  --primary-light: #EEF0FF;
 
-  --danger: #dc2626;
-  --success: #10b981;
-  --warning: #f59e0b;
+  --secondary: #FF4B72;      /* Neo Coral - alerta, eliminar, destacado especial */
+  --secondary-hover: #E11D48;
+  --accent: #FF4B72;         /* alias de --secondary: la familia no usa un 3er color de acento */
 
-  --bg-color: hsl(335, 20%, 98%); /* Soft Blush White */
-  --bg-surface: hsl(0, 0%, 100%);
-  --text-main: hsl(335, 60%, 15%); /* Deep Plum/Eggplant */
-  --text-muted: hsl(335, 20%, 45%);
-  --border-color: hsl(335, 30%, 90%); /* Light pinkish-grey border */
-  
+  --danger: #FF4B72;
+  --success: #16A34A;
+  --warning: #D97706;
+
+  --bg-color: #F8FAFC;       /* Snow */
+  --bg-surface: #ffffff;
+  --text-main: #0F172A;      /* Obsidian */
+  --text-muted: #64748B;
+  --border-color: #E2E8F0;
+
   /* Glassmorphism & Shadows */
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(255, 255, 255, 0.6);
-  --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 10px 25px -5px rgba(220, 100, 150, 0.1);
-  --shadow-glow: 0 0 30px rgba(235, 70, 130, 0.3); /* Bright pink glow */
-  
+  --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
+
   /* Typography */
-  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -88,14 +89,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: var(--primary);
   color: white;
   box-shadow: var(--shadow-glow);
 }
 
 .btn-primary:hover {
+  background: var(--primary-hover);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
 }
 
 .btn-primary:active {

@@ -20,23 +20,23 @@ const SalonChairSVG = ({ size = 120, className, style }: SVGProps) => (
     {/* Center pole */}
     <rect x="56" y="85" width="8" height="46" rx="2" fill="#9ca3af" />
     {/* Seat cushion */}
-    <rect x="30" y="75" width="60" height="14" rx="6" fill="#ec4899" />
-    <rect x="30" y="75" width="60" height="8" rx="6" fill="#f472b6" />
+    <rect x="30" y="75" width="60" height="14" rx="6" fill="#6366F1" />
+    <rect x="30" y="75" width="60" height="8" rx="6" fill="#818CF8" />
     {/* Backrest */}
     <path
       d="M34 75 C30 55 32 20 60 14 C88 20 90 55 86 75"
-      fill="#ec4899"
-      stroke="#db2777"
+      fill="#6366F1"
+      stroke="#4F46E5"
       strokeWidth="2"
     />
     <path
       d="M38 72 C36 52 38 24 60 18 C82 24 84 52 82 72"
-      fill="#f472b6"
+      fill="#818CF8"
       opacity="0.6"
     />
     {/* Armrests */}
-    <rect x="24" y="72" width="12" height="6" rx="3" fill="#f9a8d4" />
-    <rect x="84" y="72" width="12" height="6" rx="3" fill="#f9a8d4" />
+    <rect x="24" y="72" width="12" height="6" rx="3" fill="#A5B4FC" />
+    <rect x="84" y="72" width="12" height="6" rx="3" fill="#A5B4FC" />
     {/* Hydraulic cylinder detail */}
     <rect x="54" y="82" width="12" height="6" rx="2" fill="#6b7280" />
   </svg>

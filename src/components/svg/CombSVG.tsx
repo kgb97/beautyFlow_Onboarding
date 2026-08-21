@@ -15,8 +15,8 @@ const CombSVG = ({ size = 24, className, style }: SVGProps) => (
     style={style}
   >
     {/* Handle */}
-    <rect x="8" y="2" width="8" height="16" rx="3" fill="#db2777" />
-    <rect x="9" y="3" width="6" height="14" rx="2" fill="#f472b6" />
+    <rect x="8" y="2" width="8" height="16" rx="3" fill="#4F46E5" />
+    <rect x="9" y="3" width="6" height="14" rx="2" fill="#818CF8" />
     {/* Teeth */}
     <rect x="2" y="18" width="3" height="18" rx="1" fill="#d1d5db" />
     <rect x="7" y="18" width="3" height="18" rx="1" fill="#d1d5db" />

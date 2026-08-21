@@ -21,7 +21,7 @@
 }
 
 .reg-shape-1 { top: -10%; right: -10%; width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(235,70,130,0.15) 0%, rgba(255,255,255,0) 70%); }
+  background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(255,255,255,0) 70%); }
 .reg-shape-2 { bottom: -10%; left: -5%; width: 400px; height: 400px;
   background: radial-gradient(circle, rgba(160,100,220,0.15) 0%, rgba(255,255,255,0) 70%); }
 
@@ -102,7 +102,7 @@
   background: #f1f5f9; color: #cbd5e1; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); font-size: 14px;
 }
 
-.bp-tool.active { background: rgba(219,39,119,0.1); color: var(--primary); animation: bounceIn 0.4s ease; box-shadow: 0 0 12px rgba(219,39,119,0.2); }
+.bp-tool.active { background: rgba(99,102,241,0.1); color: var(--primary); animation: bounceIn 0.4s ease; box-shadow: 0 0 12px rgba(99,102,241,0.2); }
 .bp-tool.complete { background: rgba(16,185,129,0.1); color: var(--success); box-shadow: 0 0 12px rgba(16,185,129,0.3); }
 
 .bp-track { height: 4px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
@@ -135,7 +135,7 @@
   z-index: 1; transition: all 0.3s ease; position: relative;
 }
 
-.step-dot.active .step-dot-circle { background: var(--primary); color: white; box-shadow: 0 0 0 4px rgba(219,39,119,0.15); }
+.step-dot.active .step-dot-circle { background: var(--primary); color: white; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
 .step-dot.done .step-dot-circle { background: var(--success); color: white; }
 
 .step-dot-label { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
@@ -175,7 +175,7 @@
 
 .input-wrapper input:focus {
   outline: none; border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light), 0 4px 20px rgba(235,70,130,0.2);
+  box-shadow: 0 0 0 3px var(--primary-light), 0 4px 20px rgba(99,102,241,0.2);
 }
 
 .input-wrapper input.has-error { border-color: var(--danger); animation: shake 0.4s ease; box-shadow: 0 0 0 3px rgba(239,68,68,0.15), 0 0 20px rgba(239,68,68,0.1); }
@@ -245,13 +245,13 @@
 
 /* Siguiente button glows when step is ready */
 .step-nav .btn-primary:not(:disabled) {
-  box-shadow: 0 0 12px rgba(219,39,119,0.15);
+  box-shadow: 0 0 12px rgba(99,102,241,0.15);
   animation: pulseGlowReady 2s ease-in-out infinite;
 }
 
 @keyframes pulseGlowReady {
-  0%, 100% { box-shadow: 0 0 12px rgba(219,39,119,0.15); }
-  50% { box-shadow: 0 0 24px rgba(219,39,119,0.3); }
+  0%, 100% { box-shadow: 0 0 12px rgba(99,102,241,0.15); }
+  50% { box-shadow: 0 0 24px rgba(99,102,241,0.3); }
 }
 
 /* ── Button submit ── */

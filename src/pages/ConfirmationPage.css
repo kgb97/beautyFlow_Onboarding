@@ -21,7 +21,7 @@
   left: 30%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(235, 70, 130, 0.15) 0%, rgba(255,255,255,0) 70%); /* Pink */
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(255,255,255,0) 70%); /* Indigo */
 }
 
 .conf-shape-2 {
@@ -29,7 +29,7 @@
   right: 10%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(240, 150, 100, 0.2) 0%, rgba(255,255,255,0) 70%); /* Rose Gold */
+  background: radial-gradient(circle, rgba(255, 75, 114, 0.15) 0%, rgba(255,255,255,0) 70%); /* Coral */
 }
 
 .confirmation-card {
@@ -68,12 +68,12 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: rgba(235, 70, 130, 0.1); /* Soft Pink background */
+  background: rgba(22, 163, 74, 0.1); /* Exito - fondo suave */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: hsl(335, 75%, 55%); /* Bright glamorous Pink */
-  box-shadow: 0 0 30px rgba(235, 70, 130, 0.25); /* Pink glow */
+  color: #16A34A; /* Exito */
+  box-shadow: 0 0 30px rgba(22, 163, 74, 0.25);
   position: relative;
   z-index: 1;
 }
@@ -83,7 +83,7 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 3px solid rgba(235, 70, 130, 0.3);
+  border: 3px solid rgba(22, 163, 74, 0.3);
   top: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -96,7 +96,7 @@
 
 .ripple-ring:nth-child(3) {
   animation: ripple 2s ease-out 0.8s infinite;
-  border-color: rgba(201, 169, 110, 0.25);
+  border-color: rgba(22, 163, 74, 0.2);
 }
 
 .ripple-ring:nth-child(4) {

@@ -143,7 +143,7 @@ const LandingPage = () => {
         <div className="container nav-container">
           <div className="logo">
             <span className="logo-icon">✨</span>
-            <span className="logo-text">iziSalon</span>
+            <span className="logo-text"><span className="izi">izi</span>Salon</span>
           </div>
           <button className="hamburger-btn" onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={isMobileMenuOpen}>
@@ -328,7 +328,7 @@ const LandingPage = () => {
       <footer className="footer section">
         <div className="container footer-content">
           <div className="footer-brand">
-            <div className="logo"><span className="logo-icon">✨</span><span className="logo-text">iziSalon</span></div>
+            <div className="logo"><span className="logo-icon">✨</span><span className="logo-text"><span className="izi">izi</span>Salon</span></div>
             <p>Elevando el standard de la industria de la belleza.</p>
           </div>
           <div className="footer-links">

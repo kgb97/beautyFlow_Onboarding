@@ -31,27 +31,27 @@ const RoseSVG = ({ size = 40, className, style }: SVGProps) => (
     {/* Petal 1 - back */}
     <path
       d="M20 22C16 16 8 18 10 24C12 28 16 26 20 22Z"
-      fill="#f472b6"
+      fill="#818CF8"
     />
     {/* Petal 2 - left */}
     <path
       d="M20 22C14 18 8 22 12 28C14 30 18 28 20 22Z"
-      fill="#ec4899"
+      fill="#6366F1"
     />
     {/* Petal 3 - right */}
     <path
       d="M20 22C26 18 32 22 28 28C26 30 22 28 20 22Z"
-      fill="#db2777"
+      fill="#4F46E5"
     />
     {/* Petal 4 - bottom */}
     <path
       d="M20 22C16 24 16 30 20 32C24 30 24 24 20 22Z"
-      fill="#be185d"
+      fill="#3730A3"
     />
     {/* Center spiral */}
     <path
       d="M20 22C19 20 21 20 22 21C23 22 21 24 20 23C19 22 20 21 20 22Z"
-      fill="#fdf2f8"
+      fill="#EEF2FF"
     />
   </svg>
 );
