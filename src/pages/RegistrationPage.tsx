@@ -143,6 +143,7 @@ const RegistrationPage = () => {
   });
   const [plans, setPlans] = useState<PublicPlanDto[]>([]);
   const [isLoadingPlans, setIsLoadingPlans] = useState(true);
+  const [plansError, setPlansError] = useState(false);
   const [paymentSettings, setPaymentSettings] = useState<PlatformSettingsDto | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState<string | null>(null);
@@ -167,7 +168,9 @@ const RegistrationPage = () => {
     }
   };
 
-  useEffect(() => {
+  const loadPlans = () => {
+    setIsLoadingPlans(true);
+    setPlansError(false);
     PlansService.getPlans()
       .then(fetchedPlans => {
         setPlans(fetchedPlans);
@@ -175,8 +178,14 @@ const RegistrationPage = () => {
         const match = preselectId && fetchedPlans.find(p => p.id === preselectId);
         if (match) handleSelectPlan(match);
       })
-      .catch(() => setPlans([]))
+      .catch(() => setPlansError(true))
       .finally(() => setIsLoadingPlans(false));
+  };
+
+  useEffect(() => {
+    // Fetch al montar: patrón estándar de React (ver "Fetching data with Effects").
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadPlans();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -334,6 +343,11 @@ const RegistrationPage = () => {
             <div className="section-title"><CreditCard size={20} /> Elegí tu Plan</div>
             {isLoadingPlans ? (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><Loader2 className="spin" size={28} /></div>
+            ) : plansError ? (
+              <div className="global-error" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <span><AlertCircle size={16} style={{ display: 'inline', marginBottom: '-2px' }} /> No pudimos cargar los planes. Revisá tu conexión e intentá de nuevo.</span>
+                <button type="button" className="btn btn-outline" onClick={loadPlans}>Reintentar</button>
+              </div>
             ) : (
               <div className="plan-cards">
                 {plans.map(plan => {

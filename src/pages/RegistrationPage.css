@@ -156,7 +156,7 @@
 /* ── Form Grid ── */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-.section-title { grid-column: 1 / -1; font-size: 1rem; font-weight: 700; color: var(--secondary);
+.section-title { grid-column: 1 / -1; font-size: 1rem; font-weight: 700; color: var(--primary);
   border-bottom: 2px solid var(--primary-light); padding-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
 
 .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
@@ -186,12 +186,12 @@
 
 .icon-right { position: absolute; right: 0.85rem; color: var(--text-muted); cursor: pointer; display: flex; padding: 0.25rem; }
 
-.error-text { font-size: 0.7rem; color: var(--danger); display: flex; align-items: center; gap: 0.2rem; }
+.error-text { font-size: 0.7rem; color: var(--secondary-hover); display: flex; align-items: center; gap: 0.2rem; }
 
 /* ── Global Error ── */
 .global-error {
-  background: rgba(239,68,68,0.1); border-left: 4px solid var(--danger);
-  padding: 0.85rem; border-radius: var(--radius-sm); color: var(--danger);
+  background: var(--bg-surface); border: 1px solid rgba(255,75,114,0.3);
+  padding: 0.85rem; border-radius: var(--radius-sm); color: var(--secondary-hover);
   font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
 }
 
@@ -258,7 +258,7 @@
 .btn-submit { width: 100%; padding: 1rem; font-size: 1.05rem; position: relative; overflow: hidden; }
 .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; animation: none !important; }
 
-.btn-ready { background: linear-gradient(135deg, var(--primary), var(--success)) !important; animation: pulseGlow 1.5s ease-in-out infinite !important; }
+.btn-ready { background: var(--success) !important; animation: pulseGlow 1.5s ease-in-out infinite !important; }
 
 .btn-ready::after { content: ''; position: absolute; inset: 0;
   background: radial-gradient(circle at var(--click-x,50%) var(--click-y,50%), rgba(255,255,255,0.3) 0%, transparent 60%);

@@ -153,6 +153,14 @@ h1, h2, h3, h4, h5, h6 {
   animation: float 6s ease-in-out infinite;
 }
 
+/* .animate-fade-in y .float-animation setean el shorthand `animation` — combinadas en un
+   elemento, la regla declarada despues (float-animation) pisa la de antes y el fade-in
+   nunca corre, dejando el elemento en opacity:0 para siempre. Esta regla, mas especifica,
+   corre las dos juntas. */
+.animate-fade-in.float-animation {
+  animation: fadeIn var(--transition-slow) forwards, float 6s ease-in-out infinite;
+}
+
 /* Gradients */
 .text-gradient {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
