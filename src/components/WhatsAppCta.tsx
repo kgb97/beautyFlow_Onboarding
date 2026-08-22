@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { MessageCircle, X, Loader2 } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
+import WhatsAppIcon from './svg/WhatsAppIcon';
 import { PlatformSettingsService } from '../services/platformSettingsService';
 import { LeadsService } from '../services/leadsService';
 import './WhatsAppCta.css';
@@ -43,14 +44,14 @@ const WhatsAppCta = () => {
   return (
     <>
       <button className="wa-fab" onClick={() => setIsFormOpen(true)} aria-label="Contactar por WhatsApp">
-        <MessageCircle size={26} />
+        <WhatsAppIcon size={26} />
       </button>
 
       {isFormOpen && (
         <div className="wa-modal-backdrop" onClick={() => setIsFormOpen(false)}>
           <div className="wa-modal-content" onClick={e => e.stopPropagation()}>
             <button className="wa-modal-close" onClick={() => setIsFormOpen(false)} aria-label="Cerrar"><X size={20} /></button>
-            <div className="wa-modal-icon"><MessageCircle size={24} /></div>
+            <div className="wa-modal-icon"><WhatsAppIcon size={24} /></div>
             <h3>Hablemos por WhatsApp</h3>
             <p className="wa-modal-desc">Dejanos tus datos y te contactamos enseguida.</p>
             <form onSubmit={handleSubmit}>
@@ -58,7 +59,7 @@ const WhatsAppCta = () => {
               <input className="wa-input" required placeholder="Apellido" value={lastName} onChange={e => setLastName(e.target.value)} />
               <input className="wa-input" required placeholder="Teléfono (con código de país)" value={phone} onChange={e => setPhone(e.target.value)} />
               <button type="submit" className="wa-submit-btn" disabled={isSending}>
-                {isSending ? <Loader2 className="spin" size={18} /> : <MessageCircle size={18} />}
+                {isSending ? <Loader2 className="spin" size={18} /> : <WhatsAppIcon size={18} />}
                 Continuar a WhatsApp
               </button>
             </form>
