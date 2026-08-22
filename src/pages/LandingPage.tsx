@@ -15,6 +15,7 @@ import PlansSection from '../components/PlansSection';
 import { useCountUp } from '../hooks/useCountUp';
 import ClickSparkleStyles from '../components/svg/ClickSparkleStyles';
 import WhatsAppCta from '../components/WhatsAppCta';
+import { PlatformSettingsService } from '../services/platformSettingsService';
 import './LandingPage.css';
 
 function handleTiltMove(e: React.MouseEvent<HTMLDivElement>) {
@@ -75,6 +76,13 @@ const LandingPage = () => {
   const [mirrorHover, setMirrorHover] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mockIdx, setMockIdx] = useState(0);
+  const [supportEmail, setSupportEmail] = useState('hola@izisalon.com');
+
+  useEffect(() => {
+    PlatformSettingsService.getSettings()
+      .then(s => { if (s.supportEmail) setSupportEmail(s.supportEmail); })
+      .catch(() => {});
+  }, []);
   const { count: count2k, ref: countRef } = useCountUp({ end: 2000, duration: 2500 });
 
   const heroRef = useRef<HTMLElement>(null);
@@ -333,7 +341,7 @@ const LandingPage = () => {
           </div>
           <div className="footer-links">
             <div className="footer-col"><h4>Producto</h4><Link to="/registro">Comenzar gratis</Link></div>
-            <div className="footer-col"><h4>Contacto</h4><p>hola@izisalon.com</p></div>
+            <div className="footer-col"><h4>Contacto</h4><p>{supportEmail}</p></div>
             <div className="footer-col"><h4>Legal</h4><p>Términos (próximamente)</p><p>Privacidad (próximamente)</p></div>
           </div>
         </div>
