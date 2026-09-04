@@ -47,7 +47,7 @@ const FEATURES = [
   {
     icon: Tv, color: 'bg-blue', title: 'Pantalla Display',
     desc: 'Turnos en vivo en tu sala de espera.',
-    points: ['Experiencia de lujo para tus clientes', 'Personalizable con tu marca'],
+    points: ['Vista de hoy, semana o mes en un TV', 'Se actualiza sola al instante'],
   },
   {
     icon: Users, color: 'bg-orange', title: 'Gestión de Equipo',
