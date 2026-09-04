@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Scissors, CalendarHeart, Tv, Users, ArrowRight, Menu, X,
-  CheckCircle, Star, Clock, Smartphone,
+  CheckCircle, Star, Clock, Smartphone, Wallet, Package,
 } from 'lucide-react';
 import Particles from '../components/Particles';
 import SalonChairSVG from '../components/svg/SalonChairSVG';
@@ -52,7 +52,17 @@ const FEATURES = [
   {
     icon: Users, color: 'bg-orange', title: 'Gestión de Equipo',
     desc: 'Control total de tu staff desde un panel.',
-    points: ['Comisiones, horarios y permisos', 'Reportes de ingresos y rendimiento'],
+    points: ['Rendimiento por estilista: citas y servicios', 'Cierre diario, semanal, quincenal o mensual'],
+  },
+  {
+    icon: Wallet, color: 'bg-pink', title: 'Control Financiero',
+    desc: 'Ingresos, gastos y utilidad real de tu salón.',
+    points: ['Utilidad por servicio y por producto', 'Cierre de caja del día en un vistazo'],
+  },
+  {
+    icon: Package, color: 'bg-purple', title: 'Insumos y Proveedores',
+    desc: 'Inventario y compras bajo control.',
+    points: ['Alertas de stock bajo', 'Compras a crédito o contado con proveedores'],
   },
 ];
 
@@ -280,7 +290,7 @@ const LandingPage = () => {
           <ScrollReveal animation="slide-up">
             <div className="section-header text-center">
               <h2>Todo lo que necesitás para crecer</h2>
-              <p>Cuatro herramientas diseñadas para impulsar tu salón.</p>
+              <p>Herramientas diseñadas para impulsar tu salón.</p>
             </div>
           </ScrollReveal>
           <div className="features-grid">
