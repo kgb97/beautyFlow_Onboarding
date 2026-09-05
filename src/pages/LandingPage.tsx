@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Scissors, CalendarHeart, Tv, Users, ArrowRight, Menu, X,
-  CheckCircle, Star, Clock, Smartphone, Wallet, Package,
+  CheckCircle, Star, Clock, Smartphone, Wallet, Package, MessageCircle,
 } from 'lucide-react';
 import Particles from '../components/Particles';
 import SalonChairSVG from '../components/svg/SalonChairSVG';
@@ -37,7 +37,7 @@ const FEATURES = [
   {
     icon: CalendarHeart, color: 'bg-pink', title: 'Agenda Online',
     desc: 'Reservas 24/7 sin llamadas telefónicas.',
-    points: ['Recordatorios automáticos SMS/email', 'Menos ausencias, más ingresos'],
+    points: ['Confirmación instantánea por WhatsApp y email al agendar', 'Recordatorios automáticos por WhatsApp'],
   },
   {
     icon: Scissors, color: 'bg-purple', title: 'Booking Público',
@@ -52,17 +52,22 @@ const FEATURES = [
   {
     icon: Users, color: 'bg-orange', title: 'Gestión de Equipo',
     desc: 'Control total de tu staff desde un panel.',
-    points: ['Rendimiento por estilista: citas y servicios', 'Cierre diario, semanal, quincenal o mensual'],
+    points: ['Rendimiento por estilista: citas y servicios', 'Comisiones automáticas por cita, con historial de pagos'],
   },
   {
     icon: Wallet, color: 'bg-pink', title: 'Control Financiero',
     desc: 'Ingresos, gastos y utilidad real de tu salón.',
-    points: ['Utilidad por servicio y por producto', 'Cierre de caja del día en un vistazo'],
+    points: ['Múltiples formas de pago: efectivo, transferencia y tarjeta', 'Precios en córdobas o dólares, facturación siempre en córdobas'],
   },
   {
     icon: Package, color: 'bg-purple', title: 'Insumos y Proveedores',
     desc: 'Inventario y compras bajo control.',
     points: ['Alertas de stock bajo', 'Compras a crédito o contado con proveedores'],
+  },
+  {
+    icon: MessageCircle, color: 'bg-blue', title: 'Notificaciones WhatsApp',
+    desc: 'Tus clientes siempre informados, sin que muevas un dedo.',
+    points: ['Confirmación instantánea al agendar', 'Recordatorios automáticos 1 día y 1 hora antes'],
   },
 ];
 
