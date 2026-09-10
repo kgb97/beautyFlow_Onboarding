@@ -13,6 +13,7 @@ import SalonBuddy from '../components/SalonBuddy';
 import BeautyProgress from '../components/BeautyProgress';
 import ClickSparkleStyles from '../components/svg/ClickSparkleStyles';
 import WhatsAppCta from '../components/WhatsAppCta';
+import { COUNTRIES, DEFAULT_COUNTRY } from '../constants/countries';
 import './RegistrationPage.css';
 import axios from 'axios';
 
@@ -137,7 +138,7 @@ const RegistrationPage = () => {
 
   const [formData, setFormData] = useState({
     planId: '',
-    companyName: '', ruc: '', companyEmail: '', companyAddress: '', companyPhone: '',
+    companyName: '', ruc: '', companyEmail: '', companyAddress: '', companyPhone: '', companyCountryCode: DEFAULT_COUNTRY,
     ownerFirstName: '', ownerLastName: '', ownerEmail: '',
     ownerPassword: '', confirmPassword: '', acceptTerms: false,
   });
@@ -249,7 +250,8 @@ const RegistrationPage = () => {
         planId: formData.planId,
         companyName: formData.companyName, ruc: formData.ruc,
         companyEmail: formData.companyEmail, companyAddress: formData.companyAddress,
-        companyPhone: formData.companyPhone, ownerFirstName: formData.ownerFirstName,
+        companyPhone: formData.companyPhone, companyCountryCode: formData.companyCountryCode,
+        ownerFirstName: formData.ownerFirstName,
         ownerLastName: formData.ownerLastName, ownerEmail: formData.ownerEmail,
         ownerPassword: formData.ownerPassword,
       };
@@ -401,7 +403,20 @@ const RegistrationPage = () => {
             {renderInput('ruc', 'RUC / NIT', 'Ej: 20512345678', { autoComplete: 'tax-id', autoCapitalize: 'characters', inputMode: 'text', pattern: '[A-Z0-9-]{4,20}' })}
             {renderInput('companyEmail', 'Email del Negocio', 'info@salon.com', { type: 'email', autoComplete: 'email', inputMode: 'email' })}
             {renderInput('companyAddress', 'Dirección', 'Av. Principal 123, Ciudad', { fullWidth: true, autoComplete: 'street-address', autoCapitalize: 'sentences', spellCheck: true })}
-            {renderInput('companyPhone', 'Teléfono', '+5491112345678', { fullWidth: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', pattern: '\\+?[0-9]{7,15}' })}
+            <div className="form-group">
+              <label htmlFor="companyCountryCode">País</label>
+              <div className="input-wrapper">
+                <select
+                  id="companyCountryCode"
+                  name="companyCountryCode"
+                  value={formData.companyCountryCode}
+                  onChange={(e) => setFormData(prev => ({ ...prev, companyCountryCode: e.target.value }))}
+                >
+                  {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name} (+{c.dialCode})</option>)}
+                </select>
+              </div>
+            </div>
+            {renderInput('companyPhone', 'Teléfono', '+5491112345678', { type: 'tel', autoComplete: 'tel', inputMode: 'tel', pattern: '\\+?[0-9]{7,15}' })}
           </div>
         )}
         {currentStep === 3 && (

@@ -7,6 +7,7 @@ export interface OnboardingRequest {
   companyEmail: string;
   companyAddress: string;
   companyPhone: string;
+  companyCountryCode?: string;
   ownerFirstName: string;
   ownerLastName: string;
   ownerEmail: string;
