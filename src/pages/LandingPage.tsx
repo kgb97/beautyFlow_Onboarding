@@ -57,7 +57,7 @@ const FEATURES = [
   {
     icon: Wallet, color: 'bg-pink', title: 'Control Financiero',
     desc: 'Ingresos, gastos y utilidad real de tu salón.',
-    points: ['Múltiples formas de pago: efectivo, transferencia y tarjeta', 'Precios en córdobas o dólares, facturación siempre en córdobas'],
+    points: ['Múltiples formas de pago: efectivo, transferencia y tarjeta', 'Precios en córdobas o dólares, facturación siempre en córdobas', 'Saldo a favor de clientes, aplicable en cualquier cita'],
   },
   {
     icon: Package, color: 'bg-purple', title: 'Insumos y Proveedores',
@@ -357,7 +357,7 @@ const LandingPage = () => {
           <div className="footer-links">
             <div className="footer-col"><h4>Producto</h4><Link to="/registro">Comenzar gratis</Link></div>
             <div className="footer-col"><h4>Contacto</h4><p>{supportEmail}</p></div>
-            <div className="footer-col"><h4>Legal</h4><p>Términos (próximamente)</p><p>Privacidad (próximamente)</p></div>
+            <div className="footer-col"><h4>Legal</h4><Link to="/legal">Términos y Condiciones</Link><Link to="/legal">Política de Privacidad</Link></div>
           </div>
         </div>
         <div className="shimmer-divider" />
