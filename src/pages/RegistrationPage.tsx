@@ -4,6 +4,7 @@ import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight
 import { OnboardingService, type OnboardingRequest } from '../services/onboardingService';
 import { PlansService, type PublicPlanDto } from '../services/plansService';
 import { PlatformSettingsService, type PlatformSettingsDto } from '../services/platformSettingsService';
+import { TERMS_VERSION } from '../constants/legal';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
 import ScissorsSpinnerSVG from '../components/svg/ScissorsSpinnerSVG';
 import ScissorsAnimatedSVG from '../components/svg/ScissorsAnimatedSVG';
@@ -254,6 +255,7 @@ const RegistrationPage = () => {
         ownerFirstName: formData.ownerFirstName,
         ownerLastName: formData.ownerLastName, ownerEmail: formData.ownerEmail,
         ownerPassword: formData.ownerPassword,
+        acceptedTermsVersion: formData.acceptTerms ? TERMS_VERSION : undefined,
       };
       const response = await OnboardingService.registerSalon(requestData);
       sessionStorage.setItem('token', response.token);

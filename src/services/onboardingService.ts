@@ -12,6 +12,7 @@ export interface OnboardingRequest {
   ownerLastName: string;
   ownerEmail: string;
   ownerPassword: string;
+  acceptedTermsVersion?: string;
 }
 
 export interface OnboardingResponse {
