@@ -1,0 +1,34 @@
+.legal-page {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--bg-color);
+}
+
+.legal-card {
+  max-width: 560px; width: 100%;
+  padding: 2.5rem;
+  border-radius: var(--radius-md, 16px);
+}
+
+.legal-back {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+.legal-back:hover { color: var(--primary); }
+
+.legal-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--primary-light); color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.legal-card h1 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-main); }
+.legal-card p { color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
+
+.legal-contact { list-style: none; padding: 0; margin: 0; }
+.legal-contact li { font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.4rem; }
+.legal-contact a { color: var(--primary); font-weight: 600; text-decoration: none; }
+.legal-contact a:hover { text-decoration: underline; }

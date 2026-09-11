@@ -138,10 +138,11 @@
 .step-dot.active .step-dot-circle { background: var(--primary); color: white; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
 .step-dot.done .step-dot-circle { background: var(--success); color: white; }
 
-.step-dot-label { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.step-dot-label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
 .step-dot.active .step-dot-label { color: var(--primary); }
-.step-dot.done .step-dot-label { color: var(--success); }
+/* #15803D, no var(--success): el token de marca da 3.3:1 como texto sobre blanco. */
+.step-dot.done .step-dot-label { color: #15803D; }
 
 /* ── Step Content ── */
 .step-content-wrapper { animation: slideInContent 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
@@ -184,7 +185,11 @@
 
 .field-check { position: absolute; right: 0.85rem; color: var(--success); animation: bounceIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) forwards; pointer-events: none; }
 
-.icon-right { position: absolute; right: 0.85rem; color: var(--text-muted); cursor: pointer; display: flex; padding: 0.25rem; }
+.icon-right {
+  position: absolute; right: 0.35rem; color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px; background: none; border: none;
+}
 
 .error-text { font-size: 0.7rem; color: var(--secondary-hover); display: flex; align-items: center; gap: 0.2rem; }
 
@@ -204,7 +209,8 @@
 }
 
 .terms-group label { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; cursor: pointer; }
-.terms-group a, .terms-group .terms-link-pending { color: var(--primary); text-decoration: none; font-weight: 600; }
+.terms-group a { color: var(--primary); text-decoration: none; font-weight: 600; }
+.terms-group a:hover { text-decoration: underline; }
 
 /* ── Password scissors ── */
 .password-scissors { position: absolute; right: 2.5rem; color: var(--text-muted); animation: scissorsSnip 0.3s ease infinite; pointer-events: none; opacity: 0.5; }
@@ -258,7 +264,10 @@
 .btn-submit { width: 100%; padding: 1rem; font-size: 1.05rem; position: relative; overflow: hidden; }
 .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; animation: none !important; }
 
-.btn-ready { background: var(--success) !important; animation: pulseGlow 1.5s ease-in-out infinite !important; }
+/* #15803D en vez de var(--success): el token de marca (#16A34A) da 3.3:1 con texto
+   blanco -- falla WCAG AA (4.5:1). Este verde mas oscuro pasa 5:1, solo en este
+   boton -- no se toca el token compartido con el resto de la familia izi. */
+.btn-ready { background: #15803D !important; animation: pulseGlow 1.5s ease-in-out infinite !important; }
 
 .btn-ready::after { content: ''; position: absolute; inset: 0;
   background: radial-gradient(circle at var(--click-x,50%) var(--click-y,50%), rgba(255,255,255,0.3) 0%, transparent 60%);
@@ -284,7 +293,8 @@
 
 .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; font-size: 0.85rem; color: var(--text-muted); }
 .review-grid div span { font-weight: 600; color: var(--text-main); margin-right: 0.25rem; }
-.review-pw-ok { color: var(--success); font-weight: 600; font-size: 0.85rem; }
+/* #15803D, no var(--success): el token de marca da 3.3:1 como texto sobre blanco. */
+.review-pw-ok { color: #15803D; font-weight: 600; font-size: 0.85rem; }
 
 /* ── ═══════════════════════════════════════════
    RESPONSIVE BREAKPOINTS

@@ -368,10 +368,10 @@ const RegistrationPage = () => {
                       </div>
                       {plan.description && <p className="plan-desc">{plan.description}</p>}
                       <ul className="plan-limits">
-                        <li>{plan.maxBranches ?? 'Ilimitadas'} sucursal(es)</li>
-                        <li>{plan.maxStaff ?? 'Ilimitado'} staff</li>
-                        <li>{plan.maxClients ?? 'Ilimitados'} clientes</li>
-                        <li>{plan.maxAppointmentsPerMonth ?? 'Ilimitadas'} citas/mes</li>
+                        <li>{plan.maxBranches != null ? `${plan.maxBranches} sucursal(es)` : 'Sin límite de sucursales'}</li>
+                        <li>{plan.maxStaff != null ? `${plan.maxStaff} staff` : 'Sin límite de staff'}</li>
+                        <li>{plan.maxClients != null ? `${plan.maxClients} clientes` : 'Sin límite de clientes'}</li>
+                        <li>{plan.maxAppointmentsPerMonth != null ? `${plan.maxAppointmentsPerMonth} citas/mes` : 'Sin límite de citas/mes'}</li>
                       </ul>
                       {isSelected && <span className="plan-selected-check"><Check size={16} /></span>}
                     </button>
@@ -416,7 +416,7 @@ const RegistrationPage = () => {
                 </select>
               </div>
             </div>
-            {renderInput('companyPhone', 'Teléfono', '+5491112345678', { type: 'tel', autoComplete: 'tel', inputMode: 'tel', pattern: '\\+?[0-9]{7,15}' })}
+            {renderInput('companyPhone', 'Teléfono', `+${COUNTRIES.find(c => c.code === formData.companyCountryCode)?.dialCode ?? '505'}XXXXXXXX`, { type: 'tel', autoComplete: 'tel', inputMode: 'tel', pattern: '\\+?[0-9]{7,15}' })}
           </div>
         )}
         {currentStep === 3 && (
@@ -469,7 +469,7 @@ const RegistrationPage = () => {
             </div>
             <div className="terms-group">
               <input type="checkbox" id="acceptTerms" name="acceptTerms" checked={formData.acceptTerms} onChange={handleChange} />
-              <label htmlFor="acceptTerms">He leído y acepto los <span className="terms-link-pending">Términos y Condiciones</span> y la Política de Privacidad de iziSalon.</label>
+              <label htmlFor="acceptTerms">He leído y acepto los <Link to="/legal" target="_blank" rel="noopener noreferrer">Términos y Condiciones y la Política de Privacidad</Link> de iziSalon.</label>
             </div>
           </div>
         )}
@@ -477,7 +477,7 @@ const RegistrationPage = () => {
           <div className="review-step">
             <div className="section-title"><Check size={20} /> Revisa tus datos</div>
             <div className="review-card glass-panel">
-              <h4>💳 {plans.find(p => p.id === formData.planId)?.name || 'Plan'}
+              <h4>{plans.find(p => p.id === formData.planId)?.isTrial ? '🎁' : '💳'} {plans.find(p => p.id === formData.planId)?.name || 'Plan'}
                 <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(1); }}><Edit3 size={14} /> Editar</button>
               </h4>
               <div className="review-grid">
