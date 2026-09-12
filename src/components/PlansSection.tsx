@@ -24,7 +24,7 @@ const PlansSection = () => {
         <ScrollReveal animation="fade-in">
           <div className="section-header text-center">
             <h2>Planes para cada etapa de tu salón</h2>
-            <p>Elegí el que se ajuste a tu negocio hoy — podés cambiarlo cuando quieras.</p>
+            <p>Elegí el que se ajuste a tu negocio hoy. Podés cambiarlo cuando quieras.</p>
           </div>
         </ScrollReveal>
 

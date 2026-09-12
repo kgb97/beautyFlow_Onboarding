@@ -115,7 +115,7 @@ const ConfirmationPage = () => {
                   <div className="payment-pending-icon-row"><CreditCard size={16} /> Transfiere a:</div>
                   {paymentSettings.paymentAccounts.map(acc => (
                     <div key={acc.id} className="payment-account-row">
-                      <strong>{acc.label}</strong> — {acc.bankName}, {acc.accountType} {acc.accountNumber} a nombre de {acc.accountHolderName}
+                      <strong>{acc.label}</strong>: {acc.bankName}, {acc.accountType} {acc.accountNumber} a nombre de {acc.accountHolderName}
                     </div>
                   ))}
                   {paymentSettings.paymentAccounts.length === 0 && <p>Contáctanos por WhatsApp para coordinar el pago.</p>}

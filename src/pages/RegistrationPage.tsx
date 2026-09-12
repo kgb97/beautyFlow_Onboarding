@@ -389,7 +389,7 @@ const RegistrationPage = () => {
                 <p className="text-muted-hint">Tu salón queda activo de inmediato. Realiza la transferencia y verificaremos tu pago en menos de 24hs.</p>
                 {paymentSettings.paymentAccounts.map(acc => (
                   <div key={acc.id} className="payment-account-row">
-                    <strong>{acc.label}</strong> — {acc.bankName}, {acc.accountType} {acc.accountNumber} a nombre de {acc.accountHolderName}
+                    <strong>{acc.label}</strong>: {acc.bankName}, {acc.accountType} {acc.accountNumber} a nombre de {acc.accountHolderName}
                     {acc.instructions && <div className="payment-instructions">{acc.instructions}</div>}
                   </div>
                 ))}
