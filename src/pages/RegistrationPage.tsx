@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3, CreditCard, Loader2 } from 'lucide-react';
 import { OnboardingService, type OnboardingRequest } from '../services/onboardingService';
-import { PlansService, type PublicPlanDto } from '../services/plansService';
+import { PlansService, type PublicPlanDto, planPriceLabel, planAnnualNote } from '../services/plansService';
 import { PlatformSettingsService, type PlatformSettingsDto } from '../services/platformSettingsService';
 import { TERMS_VERSION } from '../constants/legal';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
@@ -366,8 +366,9 @@ const RegistrationPage = () => {
                       {plan.isTrial && <span className="plan-badge-trial">Prueba {plan.trialDurationDays ?? ''} días</span>}
                       <h3>{plan.name}</h3>
                       <div className="plan-price">
-                        {plan.priceMonthly && plan.priceMonthly > 0 ? <>${plan.priceMonthly}<span>/mes</span></> : 'Gratis'}
+                        {planPriceLabel(plan)}{plan.priceMonthly && plan.priceMonthly > 0 && <span>/mes</span>}
                       </div>
+                      {planAnnualNote(plan) && <p className="plan-annual-note">{planAnnualNote(plan)}</p>}
                       {plan.description && <p className="plan-desc">{plan.description}</p>}
                       <ul className="plan-limits">
                         <li>{plan.maxBranches != null ? `${plan.maxBranches} sucursal(es)` : 'Sin límite de sucursales'}</li>
@@ -486,7 +487,11 @@ const RegistrationPage = () => {
                 <div style={{ gridColumn: '1/-1' }}>
                   <span>Precio:</span> {(() => {
                     const p = plans.find(pl => pl.id === formData.planId);
-                    return p?.priceMonthly ? `$${p.priceMonthly}/mes` : 'Gratis';
+                    if (!p) return 'Gratis';
+                    const label = planPriceLabel(p);
+                    const suffix = p.priceMonthly && p.priceMonthly > 0 ? '/mes' : '';
+                    const annual = planAnnualNote(p);
+                    return `${label}${suffix}${annual ? ` (${annual})` : ''}`;
                   })()}
                 </div>
               </div>

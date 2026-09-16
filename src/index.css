@@ -11,6 +11,10 @@
   --secondary-hover: #E11D48;
   --accent: #FF4B72;         /* alias de --secondary: la familia no usa un 3er color de acento */
 
+  /* Marca izi - capa EXTERNA (tono propio de iziSalon, solo logo/wordmark/splash,
+     nunca botones ni UI funcional -- ver "dos capas de color" en Marca/paleta-y-tipografia.md). */
+  --brand: #8B5CF6;          /* Violeta Electrico */
+
   --danger: #FF4B72;
   --success: #16A34A;
   --warning: #D97706;

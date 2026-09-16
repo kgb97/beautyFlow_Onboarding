@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, ArrowRight, Loader2 } from 'lucide-react';
-import { PlansService, type PublicPlanDto } from '../services/plansService';
+import { PlansService, type PublicPlanDto, planPriceLabel, planAnnualNote } from '../services/plansService';
 import ScrollReveal from './ScrollReveal';
 import './PlansSection.css';
 
@@ -38,8 +38,9 @@ const PlansSection = () => {
                   {plan.isTrial && <span className="plan-showcase-trial">Prueba {plan.trialDurationDays ?? ''} días</span>}
                   <h3>{plan.name}</h3>
                   <div className="plan-showcase-price">
-                    {plan.priceMonthly && plan.priceMonthly > 0 ? <>${plan.priceMonthly}<span>/mes</span></> : 'Gratis'}
+                    {planPriceLabel(plan)}{plan.priceMonthly && plan.priceMonthly > 0 && <span>/mes</span>}
                   </div>
+                  {planAnnualNote(plan) && <p className="plan-showcase-annual-note">{planAnnualNote(plan)}</p>}
                   {plan.description && <p className="plan-showcase-desc">{plan.description}</p>}
                   <ul className="plan-showcase-limits">
                     <li><Check size={14} /> {plan.maxBranches ?? 'Ilimitadas'} sucursal(es)</li>

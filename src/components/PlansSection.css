@@ -28,6 +28,7 @@
 .plan-showcase-price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
 .plan-showcase-price span { font-size: 0.95rem; font-weight: 400; color: var(--text-muted); }
 
+.plan-showcase-annual-note { font-size: 0.78rem; color: var(--text-muted); margin-top: -0.25rem; margin-bottom: 0.5rem; }
 .plan-showcase-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem; }
 
 .plan-showcase-limits {

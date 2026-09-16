@@ -374,6 +374,7 @@
 .plan-card h3 { color: var(--text-main); margin-bottom: 0.5rem; }
 .plan-price { font-size: 1.4rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
 .plan-price span { font-size: 0.85rem; font-weight: 400; color: var(--text-muted); }
+.plan-annual-note { font-size: 0.72rem; color: var(--text-muted); margin-top: -0.35rem; margin-bottom: 0.5rem; }
 .plan-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; }
 
 .plan-limits { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; color: var(--text-main); }

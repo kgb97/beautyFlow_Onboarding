@@ -11,6 +11,7 @@ import HairDryerSVG from '../components/svg/HairDryerSVG';
 import ScissorsAnimatedSVG from '../components/svg/ScissorsAnimatedSVG';
 import ScrollReveal from '../components/ScrollReveal';
 import TrustBar from '../components/TrustBar';
+import TestimonialsSection from '../components/TestimonialsSection';
 import PlansSection from '../components/PlansSection';
 import { useCountUp } from '../hooks/useCountUp';
 import ClickSparkleStyles from '../components/svg/ClickSparkleStyles';
@@ -322,6 +323,9 @@ const LandingPage = () => {
 
       {/* Trust Bar */}
       <TrustBar />
+
+      {/* Testimonios reales, enviados por dueños de salones desde su Portal */}
+      <TestimonialsSection />
 
       {/* Planes */}
       <PlansSection />
