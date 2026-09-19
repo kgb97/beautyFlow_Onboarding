@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, ArrowRight, Loader2 } from 'lucide-react';
-import { PlansService, type PublicPlanDto, planPriceLabel, planAnnualNote } from '../services/plansService';
+import { ArrowRight, Loader2 } from 'lucide-react';
+import { PlansService, effectiveCycle, offersAnnual, type BillingCycle, type PublicPlanDto } from '../services/plansService';
+import PlanCard from './PlanCard';
+import BillingToggle from './BillingToggle';
 import ScrollReveal from './ScrollReveal';
 import './PlansSection.css';
 
 const PlansSection = () => {
   const [plans, setPlans] = useState<PublicPlanDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [cycle, setCycle] = useState<BillingCycle>('Monthly');
 
   useEffect(() => {
     PlansService.getPlans()
@@ -18,13 +21,21 @@ const PlansSection = () => {
 
   if (!isLoading && plans.length === 0) return null;
 
+  const annualPlans = plans.filter(offersAnnual);
+  const bestSavings = Math.max(0, ...annualPlans.map(p => p.annualSavingsPercent ?? 0));
+
   return (
     <section className="plans-section section" id="planes">
       <div className="container">
         <ScrollReveal animation="fade-in">
           <div className="section-header text-center">
             <h2>Planes para cada etapa de tu salón</h2>
-            <p>Elegí el que se ajuste a tu negocio hoy. Podés cambiarlo cuando quieras.</p>
+            <p>Elige el que se ajuste a tu negocio hoy. Puedes cambiarlo cuando quieras.</p>
+            {annualPlans.length > 0 && (
+              <div className="plans-toggle-wrap">
+                <BillingToggle value={cycle} onChange={setCycle} savingsPercent={bestSavings || null} />
+              </div>
+            )}
           </div>
         </ScrollReveal>
 
@@ -34,24 +45,19 @@ const PlansSection = () => {
           <div className="plans-section-grid">
             {plans.map((plan, i) => (
               <ScrollReveal key={plan.id} animation="fade-in" delay={i + 1}>
-                <div className="plan-showcase-card glass-panel">
-                  {plan.isTrial && <span className="plan-showcase-trial">Prueba {plan.trialDurationDays ?? ''} días</span>}
-                  <h3>{plan.name}</h3>
-                  <div className="plan-showcase-price">
-                    {planPriceLabel(plan)}{plan.priceMonthly && plan.priceMonthly > 0 && <span>/mes</span>}
-                  </div>
-                  {planAnnualNote(plan) && <p className="plan-showcase-annual-note">{planAnnualNote(plan)}</p>}
-                  {plan.description && <p className="plan-showcase-desc">{plan.description}</p>}
-                  <ul className="plan-showcase-limits">
-                    <li><Check size={14} /> {plan.maxBranches ?? 'Ilimitadas'} sucursal(es)</li>
-                    <li><Check size={14} /> {plan.maxStaff ?? 'Ilimitado'} miembros de staff</li>
-                    <li><Check size={14} /> {plan.maxClients ?? 'Ilimitados'} clientes</li>
-                    <li><Check size={14} /> {plan.maxAppointmentsPerMonth ?? 'Ilimitadas'} citas por mes</li>
-                  </ul>
-                  <Link to={`/registro?plan=${plan.id}`} className="btn btn-outline plan-showcase-cta">
-                    Elegir {plan.name} <ArrowRight size={16} />
-                  </Link>
-                </div>
+                <PlanCard
+                  plan={plan}
+                  cycle={cycle}
+                  highlight={plan.tier === 'Profesional' ? 'Más popular' : undefined}
+                  action={
+                    <Link
+                      to={`/registro?plan=${plan.id}&cycle=${effectiveCycle(plan, cycle)}`}
+                      className={`btn ${plan.tier === 'Profesional' ? 'btn-primary' : 'btn-outline'} plan-showcase-cta`}
+                    >
+                      Elegir {plan.name} <ArrowRight size={16} />
+                    </Link>
+                  }
+                />
               </ScrollReveal>
             ))}
           </div>
