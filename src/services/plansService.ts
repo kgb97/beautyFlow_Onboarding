@@ -1,19 +1,27 @@
 import { apiClient } from './apiClient';
 
+export type BillingCycle = 'Monthly' | 'Annual';
+
+export interface PlanLimitDto {
+  key: string;
+  label: string;
+  max: number | null;
+}
+
+// Un solo shape de plan; los límites llegan como lista y se recorren sin conocer cada
+// uno (ver PlanDto.cs / PlanLimits.cs en el API).
 export interface PublicPlanDto {
   id: string;
+  tier: string;
   name: string;
   description?: string | null;
-  priceMonthly: number | null;
   isTrial: boolean;
   trialDurationDays?: number | null;
-  maxBranches: number | null;
-  maxStaff: number | null;
-  maxActiveServices: number | null;
-  maxClients: number | null;
-  maxAppointmentsPerMonth: number | null;
-  billingCycle: 'Monthly' | 'Annual';
+  priceMonthly: number | null;
   priceAnnual: number | null;
+  annualMonthlyEquivalent: number | null;
+  annualSavingsPercent: number | null;
+  limits: PlanLimitDto[];
 }
 
 export const PlansService = {
@@ -23,15 +31,24 @@ export const PlansService = {
   },
 };
 
-// "$49/mes" siempre (para Annual, priceMonthly es solo el precio mostrado); annualNote
-// = "Facturado $588/año" solo si el plan es de ciclo anual -- nunca inventar el dato si
-// el plan no trae priceAnnual cargado.
-export function planPriceLabel(plan: Pick<PublicPlanDto, 'priceMonthly'>): string {
-  return plan.priceMonthly && plan.priceMonthly > 0 ? `$${plan.priceMonthly}` : 'Gratis';
+export const offersAnnual = (plan: PublicPlanDto) => plan.priceAnnual != null && !plan.isTrial;
+
+// Ciclo efectivo: anual solo si el plan lo ofrece, si no cae a mensual.
+export const effectiveCycle = (plan: PublicPlanDto, cycle: BillingCycle): BillingCycle =>
+  cycle === 'Annual' && offersAnnual(plan) ? 'Annual' : 'Monthly';
+
+// Precio "por mes" que se muestra en grande; null = plan gratuito.
+export function planMonthlyPrice(plan: PublicPlanDto, cycle: BillingCycle): number | null {
+  const price = effectiveCycle(plan, cycle) === 'Annual' ? plan.annualMonthlyEquivalent : plan.priceMonthly;
+  return price && price > 0 ? price : null;
 }
 
-export function planAnnualNote(plan: Pick<PublicPlanDto, 'billingCycle' | 'priceAnnual'>): string | null {
-  return plan.billingCycle === 'Annual' && plan.priceAnnual != null
-    ? `Facturado $${plan.priceAnnual}/año`
-    : null;
+// Nota de facturación: "Facturado $360/año" solo en ciclo anual; nunca se inventa el dato.
+export function planBillingNote(plan: PublicPlanDto, cycle: BillingCycle): string | null {
+  if (effectiveCycle(plan, cycle) !== 'Annual') return null;
+  return `Facturado $${plan.priceAnnual}/año${plan.annualSavingsPercent ? ` · ahorras ${plan.annualSavingsPercent}%` : ''}`;
+}
+
+export function limitLabel(limit: PlanLimitDto): string {
+  return limit.max == null ? `${limit.label}: ilimitado` : `${limit.max} ${limit.label.toLowerCase()}`;
 }

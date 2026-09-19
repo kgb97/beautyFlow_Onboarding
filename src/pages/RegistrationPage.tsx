@@ -2,7 +2,9 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3, CreditCard, Loader2 } from 'lucide-react';
 import { OnboardingService, type OnboardingRequest } from '../services/onboardingService';
-import { PlansService, type PublicPlanDto, planPriceLabel, planAnnualNote } from '../services/plansService';
+import { PlansService, effectiveCycle, offersAnnual, planBillingNote, planMonthlyPrice, type BillingCycle, type PublicPlanDto } from '../services/plansService';
+import PlanCard from '../components/PlanCard';
+import BillingToggle from '../components/BillingToggle';
 import { PlatformSettingsService, type PlatformSettingsDto } from '../services/platformSettingsService';
 import { TERMS_VERSION } from '../constants/legal';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
@@ -144,6 +146,7 @@ const RegistrationPage = () => {
     ownerPassword: '', confirmPassword: '', acceptTerms: false,
   });
   const [plans, setPlans] = useState<PublicPlanDto[]>([]);
+  const [cycle, setCycle] = useState<BillingCycle>(searchParams.get('cycle') === 'Annual' ? 'Annual' : 'Monthly');
   const [isLoadingPlans, setIsLoadingPlans] = useState(true);
   const [plansError, setPlansError] = useState(false);
   const [paymentSettings, setPaymentSettings] = useState<PlatformSettingsDto | null>(null);
@@ -158,13 +161,15 @@ const RegistrationPage = () => {
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
   const TOTAL_STEPS = 5;
+  const selectedPlan = plans.find(p => p.id === formData.planId);
+  const annualPlans = plans.filter(offersAnnual);
 
   const handleSelectPlan = (plan: PublicPlanDto) => {
     setFormData(prev => ({ ...prev, planId: plan.id }));
     setErrors(prev => ({ ...prev, planId: '' }));
     setCompletedFields(prev => new Set(prev).add('planId'));
 
-    const isPaid = (plan.priceMonthly ?? 0) > 0 && !plan.isTrial;
+    const isPaid = planMonthlyPrice(plan, cycle) != null && !plan.isTrial;
     if (isPaid && !paymentSettings) {
       PlatformSettingsService.getSettings().then(setPaymentSettings).catch(() => {});
     }
@@ -249,6 +254,7 @@ const RegistrationPage = () => {
     try {
       const requestData: OnboardingRequest = {
         planId: formData.planId,
+        billingCycle: selectedPlan ? effectiveCycle(selectedPlan, cycle) : 'Monthly',
         companyName: formData.companyName, ruc: formData.ruc,
         companyEmail: formData.companyEmail, companyAddress: formData.companyAddress,
         companyPhone: formData.companyPhone, companyCountryCode: formData.companyCountryCode,
@@ -353,34 +359,24 @@ const RegistrationPage = () => {
                 <button type="button" className="btn btn-outline" onClick={loadPlans}>Reintentar</button>
               </div>
             ) : (
-              <div className="plan-cards">
-                {plans.map(plan => {
-                  const isSelected = formData.planId === plan.id;
-                  return (
-                    <button
-                      type="button"
+              <>
+                {annualPlans.length > 0 && (
+                  <div className="plan-cycle-row">
+                    <BillingToggle value={cycle} onChange={setCycle} savingsPercent={Math.max(0, ...annualPlans.map(p => p.annualSavingsPercent ?? 0)) || null} />
+                  </div>
+                )}
+                <div className="plan-cards">
+                  {plans.map(plan => (
+                    <PlanCard
                       key={plan.id}
-                      className={`plan-card ${isSelected ? 'selected' : ''}`}
-                      onClick={() => handleSelectPlan(plan)}
-                    >
-                      {plan.isTrial && <span className="plan-badge-trial">Prueba {plan.trialDurationDays ?? ''} días</span>}
-                      <h3>{plan.name}</h3>
-                      <div className="plan-price">
-                        {planPriceLabel(plan)}{plan.priceMonthly && plan.priceMonthly > 0 && <span>/mes</span>}
-                      </div>
-                      {planAnnualNote(plan) && <p className="plan-annual-note">{planAnnualNote(plan)}</p>}
-                      {plan.description && <p className="plan-desc">{plan.description}</p>}
-                      <ul className="plan-limits">
-                        <li>{plan.maxBranches != null ? `${plan.maxBranches} sucursal(es)` : 'Sin límite de sucursales'}</li>
-                        <li>{plan.maxStaff != null ? `${plan.maxStaff} staff` : 'Sin límite de staff'}</li>
-                        <li>{plan.maxClients != null ? `${plan.maxClients} clientes` : 'Sin límite de clientes'}</li>
-                        <li>{plan.maxAppointmentsPerMonth != null ? `${plan.maxAppointmentsPerMonth} citas/mes` : 'Sin límite de citas/mes'}</li>
-                      </ul>
-                      {isSelected && <span className="plan-selected-check"><Check size={16} /></span>}
-                    </button>
-                  );
-                })}
-              </div>
+                      plan={plan}
+                      cycle={cycle}
+                      selected={formData.planId === plan.id}
+                      onSelect={() => handleSelectPlan(plan)}
+                    />
+                  ))}
+                </div>
+              </>
             )}
             {errors.planId && <span className="error-text"><AlertCircle size={14} /> {errors.planId}</span>}
 
@@ -480,18 +476,16 @@ const RegistrationPage = () => {
           <div className="review-step">
             <div className="section-title"><Check size={20} /> Revisa tus datos</div>
             <div className="review-card glass-panel">
-              <h4>{plans.find(p => p.id === formData.planId)?.isTrial ? '🎁' : '💳'} {plans.find(p => p.id === formData.planId)?.name || 'Plan'}
+              <h4>{selectedPlan?.isTrial ? '🎁' : '💳'} {selectedPlan?.name || 'Plan'}
                 <button type="button" className="review-edit" onClick={() => { setDirection('backward'); setCurrentStep(1); }}><Edit3 size={14} /> Editar</button>
               </h4>
               <div className="review-grid">
                 <div style={{ gridColumn: '1/-1' }}>
                   <span>Precio:</span> {(() => {
-                    const p = plans.find(pl => pl.id === formData.planId);
-                    if (!p) return 'Gratis';
-                    const label = planPriceLabel(p);
-                    const suffix = p.priceMonthly && p.priceMonthly > 0 ? '/mes' : '';
-                    const annual = planAnnualNote(p);
-                    return `${label}${suffix}${annual ? ` (${annual})` : ''}`;
+                    if (!selectedPlan) return 'Gratis';
+                    const price = planMonthlyPrice(selectedPlan, cycle);
+                    const note = planBillingNote(selectedPlan, cycle);
+                    return `${price != null ? `$${price}/mes` : 'Gratis'}${note ? ` (${note})` : ''}`;
                   })()}
                 </div>
               </div>

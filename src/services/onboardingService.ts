@@ -2,6 +2,7 @@ import { apiClient } from './apiClient';
 
 export interface OnboardingRequest {
   planId: string;
+  billingCycle?: 'Monthly' | 'Annual';
   companyName: string;
   ruc: string;
   companyEmail: string;
