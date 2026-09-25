@@ -17,7 +17,8 @@ interface Props {
 const PlanCard = ({ plan, cycle, highlight, selected, action, onSelect }: Props) => {
   const price = planMonthlyPrice(plan, cycle);
   const note = planBillingNote(plan, cycle);
-  const badge = plan.isTrial ? `Prueba ${plan.trialDurationDays ?? ''} días` : highlight;
+  const trialDays = plan.trialDurationDays ?? 15;
+  const badge = plan.isTrial ? 'Sin tarjeta' : highlight;
 
   const content = (
     <>
@@ -25,7 +26,7 @@ const PlanCard = ({ plan, cycle, highlight, selected, action, onSelect }: Props)
       {selected && <span className="plan-card-check" aria-hidden="true"><Check size={16} /></span>}
       <h3>{plan.name}</h3>
       <div className="plan-card-price">
-        {price != null ? <>${price}<span>/mes</span></> : 'Gratis'}
+        {price != null ? <>${price}<span>/mes</span></> : <>$0<span> por {trialDays} días</span></>}
       </div>
       {note && <p className="plan-card-note">{note}</p>}
       {plan.description && <p className="plan-card-desc">{plan.description}</p>}

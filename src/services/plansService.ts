@@ -49,6 +49,18 @@ export function planBillingNote(plan: PublicPlanDto, cycle: BillingCycle): strin
   return `Facturado $${plan.priceAnnual}/año${plan.annualSavingsPercent ? ` · ahorras ${plan.annualSavingsPercent}%` : ''}`;
 }
 
+// El API manda la etiqueta en plural ("Sucursales"); para max = 1 hace falta el
+// singular. Clave nueva sin entrada acá cae al plural, que se lee bien igual.
+const SINGULAR: Record<string, string> = {
+  branches: 'sucursal',
+  staff: 'empleado activo',
+  activeServices: 'servicio activo',
+  clients: 'cliente',
+  appointmentsPerMonth: 'cita por mes',
+};
+
 export function limitLabel(limit: PlanLimitDto): string {
-  return limit.max == null ? `${limit.label}: ilimitado` : `${limit.max} ${limit.label.toLowerCase()}`;
+  if (limit.max == null) return `${limit.label} sin límite`;
+  const noun = limit.max === 1 ? SINGULAR[limit.key] ?? limit.label.toLowerCase() : limit.label.toLowerCase();
+  return `${limit.max.toLocaleString('es-NI')} ${noun}`;
 }

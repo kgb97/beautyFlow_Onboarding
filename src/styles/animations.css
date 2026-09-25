@@ -189,16 +189,16 @@
 .delay-5 { animation-delay: 0.5s; }
 .delay-6 { animation-delay: 0.6s; }
 
-/* ── Reduced motion ── */
+/* ── Reduced motion ──
+   Global: cubre también las animaciones que no usan las clases .animate-* (partículas,
+   float, shimmer, bounceIn directo). Duración casi cero en vez de none para que las
+   animaciones con fill "forwards" igual terminen en su estado visible. */
 @media (prefers-reduced-motion: reduce) {
-  .animate-typing,
-  .animate-shimmer,
-  .animate-pulse-glow,
-  .animate-bounce-in,
-  .animate-slide-right,
-  .animate-slide-left,
-  .animate-slide-up,
-  .animate-shake {
-    animation: none !important;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
