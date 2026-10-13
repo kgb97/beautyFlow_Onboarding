@@ -166,15 +166,15 @@
 
 .input-wrapper { position: relative; display: flex; align-items: center; }
 
-.input-wrapper input {
+.input-wrapper input, .input-wrapper select {
   width: 100%; padding: 0.7rem 0.85rem; border: 1px solid var(--border-color);
   border-radius: var(--radius-sm); background: var(--bg-surface); color: var(--text-main);
   font-family: var(--font-sans); font-size: 0.95rem;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
-  -webkit-appearance: none;
 }
+.input-wrapper input { -webkit-appearance: none; }
 
-.input-wrapper input:focus {
+.input-wrapper input:focus, .input-wrapper select:focus {
   outline: none; border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-light), 0 4px 20px rgba(99,102,241,0.2);
 }
@@ -341,7 +341,7 @@
   .step-dot-label { font-size: 0.45rem; }
   .step-dot::after { top: 10px; left: calc(50% + 10px); right: calc(-50% + 10px); }
 
-  .input-wrapper input { font-size: 16px; } /* Prevents iOS zoom */
+  .input-wrapper input, .input-wrapper select { font-size: 16px; } /* Prevents iOS zoom */
   .step-nav button { font-size: 0.8rem; padding: 0.6rem 0.75rem; }
   .terms-group label { font-size: 0.8rem; }
 }
