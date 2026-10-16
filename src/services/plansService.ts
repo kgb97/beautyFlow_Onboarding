@@ -57,6 +57,9 @@ const SINGULAR: Record<string, string> = {
   activeServices: 'servicio activo',
   clients: 'cliente',
   appointmentsPerMonth: 'cita por mes',
+  products: 'producto',
+  suppliers: 'proveedor',
+  purchasesPerMonth: 'compra por mes',
 };
 
 export function limitLabel(limit: PlanLimitDto): string {
