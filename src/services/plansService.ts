@@ -22,7 +22,11 @@ export interface PublicPlanDto {
   annualMonthlyEquivalent: number | null;
   annualSavingsPercent: number | null;
   limits: PlanLimitDto[];
+  // Add-ons que trae el plan sin costo extra ('email' | 'whatsapp' | 'izipuntos').
+  includedAddons: string[];
 }
+
+export const ADDON_LABELS: Record<string, string> = { email: 'Avisos por email', whatsapp: 'Avisos por WhatsApp', izipuntos: 'Programa de puntos iziPuntos' };
 
 export const PlansService = {
   getPlans: async (): Promise<PublicPlanDto[]> => {

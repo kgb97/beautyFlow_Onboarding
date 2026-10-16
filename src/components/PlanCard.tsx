@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Check } from 'lucide-react';
-import { limitLabel, planBillingNote, planMonthlyPrice, type BillingCycle, type PublicPlanDto } from '../services/plansService';
+import { ADDON_LABELS, limitLabel, planBillingNote, planMonthlyPrice, type BillingCycle, type PublicPlanDto } from '../services/plansService';
 import './PlanCard.css';
 
 interface Props {
@@ -33,6 +33,9 @@ const PlanCard = ({ plan, cycle, highlight, selected, action, onSelect }: Props)
       <ul className="plan-card-limits">
         {plan.limits.map(l => (
           <li key={l.key}><Check size={14} /> {limitLabel(l)}</li>
+        ))}
+        {plan.includedAddons.map(a => (
+          <li key={a}><Check size={14} /> {ADDON_LABELS[a] ?? a} incluido</li>
         ))}
       </ul>
       {action}
