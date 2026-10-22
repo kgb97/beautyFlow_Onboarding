@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3, CreditCard, Loader2 } from 'lucide-react';
-import { OnboardingService, type OnboardingRequest } from '../services/onboardingService';
+import { OnboardingService, referralCode, type OnboardingRequest } from '../services/onboardingService';
 import { PlansService, effectiveCycle, offersAnnual, planBillingNote, planMonthlyPrice, type BillingCycle, type PublicPlanDto } from '../services/plansService';
 import PlanCard from '../components/PlanCard';
 import BillingToggle from '../components/BillingToggle';
@@ -262,6 +262,7 @@ const RegistrationPage = () => {
         ownerLastName: formData.ownerLastName, ownerEmail: formData.ownerEmail,
         ownerPassword: formData.ownerPassword,
         acceptedTermsVersion: formData.acceptTerms ? TERMS_VERSION : undefined,
+        referralCode: referralCode(),
       };
       const response = await OnboardingService.registerSalon(requestData);
       sessionStorage.setItem('token', response.token);

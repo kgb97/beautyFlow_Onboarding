@@ -3,6 +3,9 @@ import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import LegalPage from './pages/LegalPage';
+import { rememberReferral } from './services/onboardingService';
+
+rememberReferral();
 
 function App() {
   return (
