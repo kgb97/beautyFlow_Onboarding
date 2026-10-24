@@ -1,8 +1,8 @@
 :root {
   /* Marca izi - capa INTERNA (roles fijos en toda la familia, ver Marca/paleta-y-tipografia.md).
      Mismos tokens en PortalAdmin/BookingPublico/DisplayTV/SuperAdmin. */
-  --primary: #6366F1;        /* Indigo Electrico - accion principal */
-  --primary-hover: #4F46E5;
+  --primary: #4F46E5;        /* Indigo AA (#6366F1 con texto blanco no llega a 4.5:1) - accion principal */
+  --primary-hover: #4338CA;
   --primary-light: #EEF0FF;
 
   --secondary: #FF4B72;      /* Neo Coral - alerta, eliminar, destacado especial */
