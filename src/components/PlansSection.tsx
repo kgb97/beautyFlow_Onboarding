@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { PlansService, effectiveCycle, offersAnnual, type BillingCycle, type PublicPlanDto } from '../services/plansService';
 import { bankNames, type PlatformSettingsDto } from '../services/platformSettingsService';
 import PlanCard from './PlanCard';
 import BillingToggle from './BillingToggle';
 import './PlansSection.css';
 
+import Spinner from './Spinner';
 interface Props {
   settings: PlatformSettingsDto | null;
 }
@@ -41,7 +42,7 @@ const PlansSection = ({ settings }: Props) => {
         </div>
 
         {status === 'loading' && (
-          <div className="plans-loading" role="status"><Loader2 className="spin" size={28} /><span className="sr-only">Cargando planes</span></div>
+          <div className="plans-loading" role="status"><Spinner size={28} /><span className="sr-only">Cargando planes</span></div>
         )}
 
         {status === 'error' && (

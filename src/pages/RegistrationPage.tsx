@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3, CreditCard, Loader2 } from 'lucide-react';
+import { Store, User, Eye, EyeOff, AlertCircle, Check, ChevronLeft, ChevronRight, ShieldCheck, Edit3, CreditCard } from 'lucide-react';
 import { OnboardingService, referralCode, type OnboardingRequest } from '../services/onboardingService';
 import { PlansService, effectiveCycle, offersAnnual, planBillingNote, planMonthlyPrice, type BillingCycle, type PublicPlanDto } from '../services/plansService';
 import PlanCard from '../components/PlanCard';
@@ -8,7 +8,6 @@ import BillingToggle from '../components/BillingToggle';
 import { PlatformSettingsService, type PlatformSettingsDto } from '../services/platformSettingsService';
 import { TERMS_VERSION } from '../constants/legal';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
-import ScissorsSpinnerSVG from '../components/svg/ScissorsSpinnerSVG';
 import ScissorsAnimatedSVG from '../components/svg/ScissorsAnimatedSVG';
 import CombSVG from '../components/svg/CombSVG';
 import NailPolishSVG from '../components/svg/NailPolishSVG';
@@ -20,6 +19,7 @@ import { COUNTRIES, DEFAULT_COUNTRY } from '../constants/countries';
 import './RegistrationPage.css';
 import axios from 'axios';
 
+import Spinner from '../components/Spinner';
 // Limites alineados con la API (FluentValidation en IziSalon.Application/Validators/OnboardingValidator.cs)
 const FIELD_MAX: Record<string, number> = {
   companyName: 100,
@@ -353,7 +353,7 @@ const RegistrationPage = () => {
           <div className="plan-picker">
             <div className="section-title"><CreditCard size={20} /> Elegí tu Plan</div>
             {isLoadingPlans ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><Loader2 className="spin" size={28} /></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><Spinner size={28} /></div>
             ) : plansError ? (
               <div className="global-error" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem' }}>
                 <span><AlertCircle size={16} style={{ display: 'inline', marginBottom: '-2px' }} /> No pudimos cargar los planes. Revisá tu conexión e intentá de nuevo.</span>
@@ -581,7 +581,7 @@ const RegistrationPage = () => {
               </button>
             ) : (
               <button type="button" className={`btn btn-primary btn-submit ${allStepsComplete ? 'btn-ready' : ''}`} disabled={!allStepsComplete || isSubmitting} onClick={handleCreateClick}>
-                {isSubmitting ? <><ScissorsSpinnerSVG size={20} /> Procesando...</> : <>Crear mi Salón ✨</>}
+                {isSubmitting ? <><Spinner size={20} /> Procesando…</> : <>Crear mi Salón ✨</>}
               </button>
             )}
           </div>

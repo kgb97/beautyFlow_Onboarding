@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { X, Loader2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import WhatsAppIcon from './svg/WhatsAppIcon';
 import { PlatformSettingsService } from '../services/platformSettingsService';
 import { LeadsService } from '../services/leadsService';
 import './WhatsAppCta.css';
 
+import Spinner from './Spinner';
 function waLink(phone: string, message: string): string {
   const digits = phone.replace(/[^0-9]/g, '');
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
@@ -78,7 +79,7 @@ const WhatsAppCta = () => {
               <input id="wa-phone" className="wa-input" required type="tel" inputMode="tel" autoComplete="tel"
                 placeholder="8888 8888" value={phone} onChange={e => setPhone(e.target.value)} />
               <button type="submit" className="wa-submit-btn" disabled={isSending}>
-                {isSending ? <Loader2 className="spin" size={18} /> : <WhatsAppIcon size={18} />}
+                {isSending ? <Spinner size={18} /> : <WhatsAppIcon size={18} />}
                 Continuar a WhatsApp
               </button>
             </form>
