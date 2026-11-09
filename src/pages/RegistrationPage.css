@@ -99,7 +99,7 @@
 
 .bp-tool {
   width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  background: #f1f5f9; color: #cbd5e1; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); font-size: 14px;
+  background: #f1f5f9; color: #cbd5e1; transition: background-color 0.4s cubic-bezier(0.4,0,0.2,1), border-color 0.4s cubic-bezier(0.4,0,0.2,1), color 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s cubic-bezier(0.4,0,0.2,1); font-size: 14px;
 }
 
 .bp-tool.active { background: rgba(99,102,241,0.1); color: var(--primary); animation: bounceIn 0.4s ease; box-shadow: 0 0 12px rgba(99,102,241,0.2); }
@@ -132,7 +132,7 @@
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; background: #f1f5f9; color: #94a3b8;
-  z-index: 1; transition: all 0.3s ease; position: relative;
+  z-index: 1; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease; position: relative;
 }
 
 .step-dot.active .step-dot-circle { background: var(--primary); color: white; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
@@ -220,7 +220,6 @@
 /* ── Password Strength ── */
 .password-strength { animation: slideInUp 0.3s ease; }
 
-@keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* ── Salon Buddy ── */
 .salon-buddy { cursor: help; z-index: 5; }
@@ -244,7 +243,7 @@
 
 .step-nav button {
   min-width: 120px; padding: 0.7rem 1rem; font-size: 0.9rem;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .step-nav button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -287,7 +286,7 @@
 
 .review-card h4 { font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
 
-.review-edit { font-size: 0.75rem; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); transition: all var(--transition-fast); }
+.review-edit { font-size: 0.75rem; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast); }
 
 .review-edit:hover { background: var(--primary-light); }
 
